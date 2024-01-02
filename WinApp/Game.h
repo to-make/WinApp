@@ -81,6 +81,7 @@ class Shop
 	void(*)(*Shop, int) _func; //upgrade or inform
 public:
 	Shop(int, void(*)(*Shop, int));
+	void Update() {_func(this, 0);}
 	void Upgrade() {_func(this, 1);}
 }
 /*
