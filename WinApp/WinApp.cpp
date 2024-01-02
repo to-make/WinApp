@@ -13,6 +13,7 @@ extern std::vector <BulletObj* > bullets;
 extern std::vector<MobObj*> enemys;
 extern MobObj* player;
 extern BarrierObj* barrier;
+extern Shop* shop;
 extern int coolTime;
 
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
@@ -128,7 +129,6 @@ BOOL InitInstance_Shop(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-
 //Frame Func
 void Timerproc(HWND hWnd, UINT_PTR nID, UINT uElapse, TIMERPROC lpTimerFunc)
 {
@@ -238,6 +238,7 @@ LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 	switch (message)
 	{
 	case WM_CREATE:
+		UpdateShop();
 		break;
 	case WM_KEYDOWN:
 		switch (wParam)
@@ -246,24 +247,39 @@ LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 		case 0x50:
 		case 0x70:
 			bShopOpen = false;
-            DestroyWindow(hWnd);
+            		DestroyWindow(hWnd);
 			break;
 		}
 		break;
 	case WM_PAINT:
-    {
+    	{
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
-        Rectangle(hdc, 30, 30, 130, 370);
-        Rectangle(hdc, 160, 30, 260, 370);
-        Rectangle(hdc, 290, 30, 390, 370);
-        //Not End
+	        
+		//Not End
+		int len = shop.size();
+		int y=50;  //if add title, y is different each index
+		for(int i=0;i<len;i++){
+			//text
+			//square
+			for(int j=0;j<shop[i]->_maxcnt;j++){
+				if(j<shop[i]->_cnt)SetDCPenColor(hdc, RGB(200, 0, 0));  //alternative : use graypen and not fill
+				else SetDCPenColor(hdc, RGB(0, 200, 0));
+				Rectangle(hdc, 50 + j * 60, y, 100 + j * 60, y + 30);
+			}
+			//upgradebutton
+			SetDCPenColor(hdc, RGB(30, 30, 200));
+			Rectangle(hdc, 430, y, 460, y + 30);
+
+			y += 100;
+		}
+		
 		EndPaint(hWnd, &ps);
 		break;
-    }
+    	}
 	case WM_DESTROY:
-        bShopOpen = false;
-        DestroyWindow(hWnd);
+	        bShopOpen = false;
+	        DestroyWindow(hWnd);
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
