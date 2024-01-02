@@ -154,13 +154,25 @@ Shop::Shop(int maxcnt,void(*func)(Shop*, int))
 {
 	_maxcnt = maxcnt;
 	_cnt = 0;
+	parent = NULL;
+	_func = func;
+}
+
+Shop::Shop(int maxcnt,void(*func)(Shop*, int), Shop* parent)
+{
+	_maxcnt = maxcnt;
+	_cnt = 0;
+	_parent = parent;
 	_func = func;
 }
 
 void Init()
 {
+	Shop* parent;
 	player = new MobObj(10, 10, {100,100});
-	shop.push_back(new Shop(5, AddShot)); //init랑 합치는게 맞는거 같은데 -> ok
+	shop.push_back(new Shop(5, AddShot));
+	shop.push_back(new Shop(1, AddBarrier));
+	parent = shop.back();
 }
 
 bool MoveFrame()
@@ -207,7 +219,22 @@ void AddShot(Shop* subject,int mode)
 	if(mode == 0){ //message
 		char text[MAXLENGTH] = "Fire ";
 		strcat(text, IntToChar(subject->_cnt));
+		if(_cnt != _maxcnt){
+			strcat(text, "(");
+			strcat(text, IntToChar(subject->_cnt+1));
+			strcat(text, ")");
+		}
 		strcat(text, ((subject->_cnt)==1?" bullet":" bullets"));
+		strcpy(subject->_name, text);
+	}
+	else if(mode == 1){ //upgrage
+	}
+}
+
+void AddBarrier(Shop* subject,int mode)
+{
+	if(mode == 0){ //message
+		char text[MAXLENGTH] = cnt==1?"(Add Barrier)":"Add Barrier";
 		strcpy(subject->_name, text);
 	}
 	else if(mode == 1){ //upgrage
