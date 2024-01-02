@@ -107,3 +107,4 @@ bool MoveFrame();
 void SetShop(); // shop reset(only once work)
 void UpdateShop();
 void AddShot(Shop*, int);
+void AddBarrier(Shop*, int);
