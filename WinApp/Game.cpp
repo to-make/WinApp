@@ -116,9 +116,20 @@ void reset()
 	shop.push_back(5, AddShot);
 }
 
+char* IntToChar(int n)
+{
+	std::string tmp = std::to_string(n);
+	//char const *num_char = tmp.c_str();
+	return tmp.c_str();
+}
+
 void AddShot(Shop* subject,int mode)
 {
 	if(mode == 0){ //message
+		char text[MAXLENGTH] = "Fire ";
+		strcat(text, IntToChar(subject->cnt));
+		strcat(text, ((subject->cnt)==1?" bullet":" bullets"));
+		strcpy(subject->name, text);
 	}
 	else if(mode == 1){ //upgrage
 	}
