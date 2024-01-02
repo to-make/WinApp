@@ -75,6 +75,7 @@ public:
 class Shop
 {
 	int _maxcnt, _cnt;
+	char _text[80]; //not THCAR?
 	void(*)(*Shop, int) _func; //upgrade or inform
 public:
 	Shop(int, void(*)(*Shop, int));
