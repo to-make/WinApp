@@ -235,6 +235,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	static int scroll=0;
 	switch (message)
 	{
 	case WM_CREATE:
@@ -251,27 +252,38 @@ LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 			break;
 		}
 		break;
+	case WM_LBUTTONDOWN:
+		POINT pt;
+		pt.x = GET_X_LPARAM(lParam);
+		pt.y = GET_Y_LPARAM(lParam);
+		break; //"break;" is out of parentheses in window example code
+	case WM_MOUSEWHEEL:
+		int zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
+		/*if(zDelta < 0)zDelta = -4;
+		else if(zDelta > 0)zDelta = 4;*/
+		scroll += zDelta;
+		//Maybe I should make scrollbar
+		break;
 	case WM_PAINT:
     	{
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
 	        
-		//Not End
 		int len = shop.size();
-		int y=50;  //if add title, y is different each index
+		int printy=50 - scroll;  //if add title, y is different each index
 		for(int i=0;i<len;i++){
 			//text
 			//square
 			for(int j=0;j<shop[i]->_maxcnt;j++){
 				if(j<shop[i]->_cnt)SetDCPenColor(hdc, RGB(200, 0, 0));  //alternative : use graypen and not fill
 				else SetDCPenColor(hdc, RGB(0, 200, 0));
-				Rectangle(hdc, 50 + j * 60, y, 100 + j * 60, y + 30);
+				Rectangle(hdc, 50 + j * 60, printy, 100 + j * 60, printy + 30);
 			}
 			//upgradebutton
 			SetDCPenColor(hdc, RGB(30, 30, 200));
-			Rectangle(hdc, 430, y, 460, y + 30);
+			Rectangle(hdc, 430, printy, 460, printy + 30);
 
-			y += 100;
+			printy += 100;
 		}
 		
 		EndPaint(hWnd, &ps);
