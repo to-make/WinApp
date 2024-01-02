@@ -70,27 +70,84 @@ void BarrierObj::MovePos(POINT pos)
 	_pos = pos;
 }
 
-bool IsCollide(Object t)
+bool BarrierObj::IsCollide(Object t)
 {
-	POINT tpos = t->GetPos(), vertex;
-	
+	POINT tpos = t.GetPos(), vertex;
 	int x = 0, y = 0,check;
-	if(_pos.x - _r > tpos.x)x = 1;
-	else if(_pos.x + _r < tpos.x)x = 3;
+	if(_pos.x - _r/2 > tpos.x)x = 1;
+	else if(_pos.x + _r/2 < tpos.x)x = 3;
 	else x = 2;
-	if(_pos.y - _r > tpos.y)y = 1;
-	else if(_pos.y + _r < tpos.y)y = 3;
+	if(_pos.y - _r/2 > tpos.y)y = 1;
+	else if(_pos.y + _r/2 < tpos.y)y = 3;
 	else y = 2;
 	check = (y<<2) | x;
 	switch(check)
 	{
+		case 6:
+			return _pos.y - _r/2 <= (t.GetR());
+		case 9:
+			return _pos.x - _r/2 <= (t.GetR());
+		case 10:
+			return true;
+		case 12:
+			return _pos.x + _r/2 <= (t.GetR());
+		case 14:
+			return _pos.y + _r/2 <= (t.GetR());
 		case 5:
+			vertex = {_pos.x - _r/2, _pos.y - r/2};
+			break;
 		case 7:
+			vertex = {_pos.x + _r/2, _pos.y - r/2};
+			break;
 		case 13:
+			vertex = {_pos.x - _r/2, _pos.y + r/2};
+			break;
 		case 15:
-			long long int dis = (vertex.x - tpos.x) * (vertex.x - tpos.x) + (vertex.y - tpos.y) * (vertex.y - tpos.y);
-			return dis <= (t->GetR());
+			vertex = {_pos.x - _r/2, _pos.y + r/2};
+			break;
 	}
+	long long int dis = (vertex.x - tpos.x) * (vertex.x - tpos.x) + (vertex.y - tpos.y) * (vertex.y - tpos.y);
+	return dis <= (t.GetR());
+}
+
+bool BarrierObj::IsCollide(Object* t)
+{
+	POINT tpos = t->GetPos(), vertex;
+	int x = 0, y = 0,check;
+	if(_pos.x - _r/2 > tpos.x)x = 1;
+	else if(_pos.x + _r/2 < tpos.x)x = 3;
+	else x = 2;
+	if(_pos.y - _r/2 > tpos.y)y = 1;
+	else if(_pos.y + _r/2 < tpos.y)y = 3;
+	else y = 2;
+	check = (y<<2) | x;
+	switch(check)
+	{
+		case 6:
+			return _pos.y - _r/2 <= (t->GetR());
+		case 9:
+			return _pos.x - _r/2 <= (t->GetR());
+		case 10:
+			return true;
+		case 12:
+			return _pos.x + _r/2 <= (t->GetR());
+		case 14:
+			return _pos.y + _r/2 <= (t->GetR());
+		case 5:
+			vertex = {_pos.x - _r/2, _pos.y - r/2};
+			break;
+		case 7:
+			vertex = {_pos.x + _r/2, _pos.y - r/2};
+			break;
+		case 13:
+			vertex = {_pos.x - _r/2, _pos.y + r/2};
+			break;
+		case 15:
+			vertex = {_pos.x - _r/2, _pos.y + r/2};
+			break;
+	}
+	long long int dis = (vertex.x - tpos.x) * (vertex.x - tpos.x) + (vertex.y - tpos.y) * (vertex.y - tpos.y);
+	return dis <= (t->GetR());
 }
 
 Shop::Shop(int maxcnt,void(*func)(Shop*, int))
