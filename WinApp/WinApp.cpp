@@ -14,7 +14,7 @@ extern std::vector<MobObj*> enemys;
 extern MobObj* player;
 extern BarrierObj* barrier;
 extern std::vector<Shop*> shop;
-extern int coolTime;
+extern RECT rtMapSize;
 
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
@@ -22,7 +22,6 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름�
 WCHAR szWindowClass_Shop[MAX_LOADSTRING] = _T("game shop window");
 WCHAR szWindowClass_Barrier[MAX_LOADSTRING] = _T("game barrier window");
 BOOL bShopOpen = false;
-int lastTime = 0;
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE, LRESULT(*)(HWND, UINT, WPARAM, LPARAM), WCHAR*);
@@ -134,57 +133,12 @@ void Timerproc(HWND hWnd, UINT_PTR nID, UINT uElapse, TIMERPROC lpTimerFunc)
 {
     RECT rtClient, rtWindow;
     GetClientRect(hWnd, &rtClient);
+    GetWindowRect(hWnd, &rtMapSize);
     GetWindowRect(hWnd, &rtWindow);
-    POINT ptPlayer = player->GetPos();
-    
-    //Player Move
-    if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
-        ptPlayer.x -= SPEED;
-    }
-    if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
-        ptPlayer.x += SPEED;
-    }
-    if (GetAsyncKeyState(VK_UP) & 0x8000) {
-        ptPlayer.y -= SPEED;
-    }
-    if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-        ptPlayer.y += SPEED;
-    }
-
-    //Shot bullet
-    if (GetAsyncKeyState(VK_LBUTTON) & 0x8000 && lastTime <= 0) {
-        POINT ptMouse, ptPlayer= player->GetPos();
-        GetCursorPos(&ptMouse);
-        bullets.push_back(new BulletObj(1,  5,  atan2((ptMouse.y - ptPlayer.y),(ptMouse.x - ptPlayer.x)), ptPlayer));
-        lastTime = coolTime;
-    }
-
-
-    //wall collsion check
-    int MLeft=-1,MRight=-1,MTop=-1,MBottom=-1;
-
-    if (ptPlayer.x - R < rtWindow.left) {
-        MLeft = +rtWindow.left - (ptPlayer.x - R);
-        ptPlayer.x += MLeft -1;
-    }
-    if (ptPlayer.x + R > rtWindow.right) {
-        MRight = (ptPlayer.x + R) - rtWindow.right;
-        ptPlayer.x -= MRight -1;
-    }
-    if (ptPlayer.y - R < rtWindow.top) {
-        MTop = rtWindow.top - (ptPlayer.y - R);
-        ptPlayer.y += MTop -1;
-    }
-    if (ptPlayer.y + R > rtWindow.bottom) {
-        MBottom = (ptPlayer.y + R) - rtWindow.bottom;
-        ptPlayer.y -= MBottom -1;
-    }
 
     MoveFrame();
-
-    lastTime -= 1;
-    player->SetPos(ptPlayer);
-    MoveWindow(hWnd, rtWindow.left - MLeft, rtWindow.top - MTop, rtWindow.right - rtWindow.left + MLeft + MRight, rtWindow.bottom - rtWindow.top + MTop + MBottom, true);
+    
+    MoveWindow(hWnd, rtMapSize.left, rtMapSize.top, rtMapSize.right - rtMapSize.left, rtMapSize.bottom - rtMapSize.top, true);
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -213,12 +167,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         HDC hdc = BeginPaint(hWnd, &ps);
         RECT rtWindow;
         GetWindowRect(hWnd, &rtWindow);
-        player->Draw(hdc, rtWindow);
+        player->Draw(hdc);
         for (auto i : enemys) {
-            i->Draw(hdc, rtWindow);
+            i->Draw(hdc);
         }
         for (auto i : bullets) {
-            i->Draw(hdc, rtWindow);
+            i->Draw(hdc);
         }
 
         EndPaint(hWnd, &ps);
@@ -273,7 +227,7 @@ LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 	    PAINTSTRUCT ps;
 	    HDC hdc = BeginPaint(hWnd, &ps);
 	        
-	    int len = shop.size();
+	    size_t len = shop.size();
 	    int printy=50 - scroll;  //if add title, y is different each index
 	    for(int i=0;i<len;i++){
 		    //text

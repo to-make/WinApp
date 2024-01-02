@@ -12,8 +12,10 @@
 
 #define R 50
 #define SPEED 10
-
 #define MAXLENGTH 80
+
+#define INTTOCHAR(N) (std::to_string(N).c_str())
+
 /*
 #define PI 3.1415926
 #define RADIAN(X) (X) * PI / 180
@@ -40,7 +42,7 @@ public:
 	virtual bool IsCollide(Object);
 	virtual bool IsCollide(Object*);
 
-	void Draw(HDC hdc, RECT rtWindow);
+	void Draw(HDC hdc);
 };
 
 class BulletObj : public Object

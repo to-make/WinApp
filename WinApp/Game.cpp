@@ -5,7 +5,7 @@ std::vector<MobObj*> enemys;
 MobObj* player;
 BarrierObj* barrier;
 std::vector<Shop*> shop;
-int coolTime=100;
+RECT rtMapSize;
 
 void Object::MoveAngleToDir()
 {
@@ -35,9 +35,9 @@ bool Object::IsCollide(Object* t)
 		return dis <= (_r + t->GetR());
 }
 
-void Object::Draw(HDC hdc, RECT rtWindow)
+void Object::Draw(HDC hdc)
 {
-	Ellipse(hdc, (_pos.x - R) - rtWindow.left, (_pos.y - R) - rtWindow.top, (_pos.x + R) - rtWindow.left, (_pos.y + R) - rtWindow.top);
+	Ellipse(hdc, (_pos.x - R) - rtMapSize.left, (_pos.y - R) - rtMapSize.top, (_pos.x + R) - rtMapSize.left, (_pos.y + R) - rtMapSize.top);
 }
 
 BulletObj::BulletObj(int damage, int speed, double angle, POINT pos)
@@ -62,7 +62,56 @@ Player::Player(int hp, int damage, POINT pos)
 
 void Player::MoveOneFrame()
 {
+	POINT ptPlayer = player->GetPos();
 
+	//Player Move
+	if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
+		ptPlayer.x -= SPEED;
+	}
+	if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
+		ptPlayer.x += SPEED;
+	}
+	if (GetAsyncKeyState(VK_UP) & 0x8000) {
+		ptPlayer.y -= SPEED;
+	}
+	if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+		ptPlayer.y += SPEED;
+	}
+
+	//wall collsion check
+	int MLeft = -1, MRight = -1, MTop = -1, MBottom = -1; //TODO:변수명
+
+	if (ptPlayer.x - R < rtMapSize.left) {
+		MLeft = +rtMapSize.left - (ptPlayer.x - R);
+		ptPlayer.x += MLeft - 1;
+	}
+	if (ptPlayer.x + R > rtMapSize.right) {
+		MRight = (ptPlayer.x + R) - rtMapSize.right;
+		ptPlayer.x -= MRight - 1;
+	}
+	if (ptPlayer.y - R < rtMapSize.top) {
+		MTop = rtMapSize.top - (ptPlayer.y - R);
+		ptPlayer.y += MTop - 1;
+	}
+	if (ptPlayer.y + R > rtMapSize.bottom) {
+		MBottom = (ptPlayer.y + R) - rtMapSize.bottom;
+		ptPlayer.y -= MBottom - 1;
+	}
+
+	rtMapSize.left -= MLeft;
+	rtMapSize.top -= MTop;
+	rtMapSize.right += MRight;
+	rtMapSize.bottom += MBottom;
+
+	//Shot bullet
+	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
+		POINT ptMouse, ptPlayer = player->GetPos();
+		GetCursorPos(&ptMouse);
+		bullets.push_back(new BulletObj(1, 5, atan2((ptMouse.y - ptPlayer.y), (ptMouse.x - ptPlayer.x)), ptPlayer));
+	}
+
+
+	player->SetPos(ptPlayer);
 }
 
 void Enemy1::MoveOneFrame()
@@ -111,6 +160,7 @@ bool BarrierObj::IsCollide(Object t)
 			vertex = {_pos.x - _r/2, _pos.y + _r/2};
 			break;
 	}
+	//TODO:vertex가 초기화 안된경우 처리
 	long long int dis = (vertex.x - tpos.x) * (vertex.x - tpos.x) + (vertex.y - tpos.y) * (vertex.y - tpos.y);
 	return dis <= (t.GetR());
 }
@@ -155,7 +205,7 @@ bool BarrierObj::IsCollide(Object* t)
 	return dis <= (t->GetR());
 }
 
-Shop::Shop(int maxcnt,void(*func)(Shop*, int))
+Shop::Shop(int maxcnt,void(*func)(Shop*, int))//TODO:_name 초기화
 {
 	_maxcnt = maxcnt;
 	_cnt = 0;
@@ -163,7 +213,7 @@ Shop::Shop(int maxcnt,void(*func)(Shop*, int))
 	_func = func;
 }
 
-Shop::Shop(int maxcnt,void(*func)(Shop*, int), Shop* parent)
+Shop::Shop(int maxcnt,void(*func)(Shop*, int), Shop* parent)//TODO:_name 초기화
 {
 	_maxcnt = maxcnt;
 	_cnt = 0;
@@ -187,7 +237,10 @@ bool MoveFrame()
 	}
 	for (auto i : enemys) {
 		i->MoveOneFrame();
-	}/*
+	}
+	player->MoveOneFrame();
+
+	/*
 	for (auto i : bullets) {
 		for (auto j : enemys) {
 			if (i->IsCollide(j)) {
@@ -212,21 +265,14 @@ void UpdateShop()
 	for(Shop* i : shop)i->Update();
 }
 
-char* IntToChar(int n) //can I not declare in game.h?
-{
-	std::string tmp = std::to_string(n);
-	//char const *num_char = tmp.c_str();
-	return (char*)(tmp.c_str());
-}
-
 void AddShot(Shop* subject,int mode)
 {
 	if(mode == 0){ //message
 		char text[MAXLENGTH] = "Fire ";
-		strcat(text, IntToChar(subject->_cnt));
+		strcat(text, INTTOCHAR(subject->_cnt));
 		if(subject->_cnt != subject->_maxcnt){
 			strcat(text, "(");
-			strcat(text, IntToChar(subject->_cnt+1));
+			strcat(text, INTTOCHAR(subject->_cnt+1));
 			strcat(text, ")");
 		}
 		strcat(text, ((subject->_cnt)==1?" bullet":" bullets"));
