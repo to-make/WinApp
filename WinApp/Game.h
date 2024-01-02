@@ -86,7 +86,7 @@ public:
 	void(*_func)(Shop*, int); //upgrade or inform
 
 	Shop(int, void(*)(Shop*, int));
-	Shop(int, void(*)(Shop*, int), int);
+	Shop(int, void(*)(Shop*, int), Shop*);
 	void Update() { _func(this, 0); }
 	void Upgrade() { _func(this, 1); }
 	bool IsVisiable() {return parent->_cnt!=0;}
