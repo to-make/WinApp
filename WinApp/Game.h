@@ -72,7 +72,23 @@ public:
 	void MovePos(POINT);
 };
 
+class Shop
+{
+	int _maxcnt, _cnt;
+	void(*)(*Shop, int) _func; //upgrade or inform
+public:
+	Shop(int, void(*)(*Shop, int));
+	void Upgrade() {_func(this, 1);}
+}
+/*
+==list==
+addshot
+shotdamage
+reload
+barrier
+gravity wave
+*/
+
 void Init();
 bool MoveFrame();
-
-//test
+void reset(); // shop reset(only once work)
