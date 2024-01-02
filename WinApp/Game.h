@@ -11,6 +11,8 @@
 
 #define R 50
 #define SPEED 10
+
+#define MAXLENGTH 80
 /*
 #define PI 3.1415926
 #define RADIAN(X) (X) * PI / 180
@@ -75,11 +77,21 @@ public:
 class Shop
 {
 	int _maxcnt, _cnt;
+<<<<<<< HEAD
 	void(*_func)(Shop*, int); //upgrade or inform
 public:
 	Shop(int, void(*)(Shop*, int));
 	void Upgrade() { _func(this, 1); }
 };
+=======
+	char _text[MAXLENGTH]; //not THCAR?
+	void(*)(*Shop, int) _func; //upgrade or inform
+public:
+	Shop(int, void(*)(*Shop, int));
+	void Update() {_func(this, 0);}
+	void Upgrade() {_func(this, 1);}
+}
+>>>>>>> c86bdd8efefd1e9af38a334386169723a96fc03a
 /*
 ==list==
 addshot
@@ -91,5 +103,10 @@ gravity wave
 
 void Init();
 bool MoveFrame();
+<<<<<<< HEAD
 void reset(); // shop reset(only once work)
 void AddShot(Shop*, int);
+=======
+void SetShop(); // shop reset(only once work)
+void UpdateShop();
+>>>>>>> c86bdd8efefd1e9af38a334386169723a96fc03a

@@ -111,14 +111,30 @@ bool MoveFrame()
 
 
 
-void reset()
+void SetShop()
 {
 	shop.push_back(new Shop(5, AddShot));//init랑 합치는게 맞는거 같은데
+}
+
+void UpdateShop()
+{
+	for(Shop* i : shop)i->Update();
+}
+
+char* IntToChar(int n) //can I not declare in game.h?
+{
+	std::string tmp = std::to_string(n);
+	//char const *num_char = tmp.c_str();
+	return tmp.c_str();
 }
 
 void AddShot(Shop* subject,int mode)
 {
 	if(mode == 0){ //message
+		char text[MAXLENGTH] = "Fire ";
+		strcat(text, IntToChar(subject->cnt));
+		strcat(text, ((subject->cnt)==1?" bullet":" bullets"));
+		strcpy(subject->name, text);
 	}
 	else if(mode == 1){ //upgrage
 	}
