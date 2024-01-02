@@ -59,11 +59,16 @@ MobObj::MobObj(int hp, int damage, POINT pos)
 	_damage = damage;
 	_pos = pos;
 }
-void MobObj::MoveOneFrame()
+
+void Player::MoveOneFrame()
 {
-	MoveAngleToDir();
+
 }
 
+void Enemy1::MoveOneFrame()
+{
+
+}
 
 void BarrierObj::MovePos(POINT pos)
 {

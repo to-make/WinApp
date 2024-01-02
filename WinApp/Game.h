@@ -65,6 +65,17 @@ public:
 	int GetHp() { return _hp; }
 	void SetHp(int hp) { _hp = hp; }
 
+	virtual void MoveOneFrame() = 0;
+};
+
+class Player : public MobObj
+{
+	int _cooltime; //게임 관련 변수들
+	void MoveOneFrame();
+};
+
+class Enemy1 : public MobObj
+{
 	void MoveOneFrame();
 };
 
