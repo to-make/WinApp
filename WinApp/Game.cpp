@@ -125,16 +125,16 @@ char* IntToChar(int n) //can I not declare in game.h?
 {
 	std::string tmp = std::to_string(n);
 	//char const *num_char = tmp.c_str();
-	return tmp.c_str();
+	return (char*)(tmp.c_str());
 }
 
 void AddShot(Shop* subject,int mode)
 {
 	if(mode == 0){ //message
 		char text[MAXLENGTH] = "Fire ";
-		strcat(text, IntToChar(subject->cnt));
-		strcat(text, ((subject->cnt)==1?" bullet":" bullets"));
-		strcpy(subject->name, text);
+		strcat(text, IntToChar(subject->_cnt));
+		strcat(text, ((subject->_cnt)==1?" bullet":" bullets"));
+		strcpy(subject->_name, text);
 	}
 	else if(mode == 1){ //upgrage
 	}

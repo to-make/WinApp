@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <math.h>
 #include <vector>
+#include <string>
 
 #define UP 0
 #define DOWN 1
@@ -76,22 +77,15 @@ public:
 
 class Shop
 {
-	int _maxcnt, _cnt;
-<<<<<<< HEAD
-	void(*_func)(Shop*, int); //upgrade or inform
 public:
+	int _maxcnt, _cnt;
+	char _name[MAXLENGTH]; //not THCAR?
+	void(*_func)(Shop*, int); //upgrade or inform
+
 	Shop(int, void(*)(Shop*, int));
+	void Update() { _func(this, 0); }
 	void Upgrade() { _func(this, 1); }
 };
-=======
-	char _text[MAXLENGTH]; //not THCAR?
-	void(*)(*Shop, int) _func; //upgrade or inform
-public:
-	Shop(int, void(*)(*Shop, int));
-	void Update() {_func(this, 0);}
-	void Upgrade() {_func(this, 1);}
-}
->>>>>>> c86bdd8efefd1e9af38a334386169723a96fc03a
 /*
 ==list==
 addshot
@@ -103,10 +97,6 @@ gravity wave
 
 void Init();
 bool MoveFrame();
-<<<<<<< HEAD
-void reset(); // shop reset(only once work)
-void AddShot(Shop*, int);
-=======
 void SetShop(); // shop reset(only once work)
 void UpdateShop();
->>>>>>> c86bdd8efefd1e9af38a334386169723a96fc03a
+void AddShot(Shop*, int);

@@ -13,7 +13,7 @@ extern std::vector <BulletObj* > bullets;
 extern std::vector<MobObj*> enemys;
 extern MobObj* player;
 extern BarrierObj* barrier;
-extern Shop* shop;
+extern std::vector<Shop*> shop;
 extern int coolTime;
 
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
