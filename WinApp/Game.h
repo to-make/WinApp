@@ -73,6 +73,8 @@ class BarrierObj : public Object
 	int _damage;
 public:
 	void MovePos(POINT);
+	bool IsCollide(Object) override;
+	bool IsCollide(Object*) override;
 };
 
 class Shop
