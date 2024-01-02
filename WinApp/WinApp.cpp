@@ -147,6 +147,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_CREATE:
         SetTimer(hWnd, 1, 1, (TIMERPROC)Timerproc);
         Init();
+        enemys.push_back(new Enemy1(10, 10, 5, player->GetPos()));
         break;
     case WM_KEYDOWN:
         switch (wParam)
@@ -189,9 +190,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static int scroll=0;
+    static HFONT hFont;
 	switch (message)
 	{
 	case WM_CREATE:
+		hFont = CreateFont(100, 0, 0, 0, FW_NORMAL, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, 0, _T("명조"));
 		UpdateShop();
 		break;
 	case WM_KEYDOWN:
@@ -218,6 +221,7 @@ LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
         /*if(zDelta < 0)zDelta = -4;
         else if(zDelta > 0)zDelta = 4;*/
         scroll += zDelta;
+		InvalidateRect(hWnd, NULL, TRUE);
         //Maybe I should make scrollbar
         break;
     }
@@ -225,14 +229,22 @@ LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
     {
 	    PAINTSTRUCT ps;
 	    HDC hdc = BeginPaint(hWnd, &ps);
+        RECT rt;
+        GetClientRect(hWnd, &rt);
+
+		HFONT hOldFont = (HFONT)SelectObject(hdc, hFont);
+		DrawText(hdc, _T("Shop"), -1, &rt, DT_CENTER);
+		SelectObject(hdc, hOldFont);
 	        
 	    size_t len = shop.size();
-	    int printy=50 - scroll;  //if add title, y is different each index
+	    int printy=90 - scroll;  //if add title, y is different each index
 	    for(int i=0;i<len;i++){
 		    //text
 		    //square
-		    for(int j=0;j<shop[i]->_maxcnt;j++){
-			    if(j<shop[i]->_cnt)SetDCPenColor(hdc, RGB(200, 0, 0));  //alternative : use graypen and not fill
+			int scnt = shop[i]->GetCnt();
+			int smaxcnt = shop[i]->GetMaxcnt();
+		    for(int j=0;j<smaxcnt;j++){
+			    if(j<scnt)SetDCPenColor(hdc, RGB(200, 0, 0));  //alternative : use graypen and not fill
 			    else SetDCPenColor(hdc, RGB(0, 200, 0));
 			    Rectangle(hdc, 50 + j * 60, printy, 100 + j * 60, printy + 30);
 		    }

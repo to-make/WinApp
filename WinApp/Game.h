@@ -1,6 +1,7 @@
 #pragma once
 
 #include <windows.h>
+#include <tchar.h>
 #include <math.h>
 #include <vector>
 #include <string>
@@ -15,8 +16,8 @@
 #define SPEED 10
 #define MAXLENGTH 80
 
-#define INTTOCHAR(N) (std::to_string(N).c_str())
-#define FLOATTOCHAR(N) [](float f) -> char* {char cVal[MAXLENGTH];  sprintf(cVal, "%f", f); return cVal;}(N)
+#define INTTOCHAR(N) [](int n) -> TCHAR* {TCHAR tchar[MAXLENGTH];  wsprintf(tchar, _T("%d)"), n); return tchar;}(N)
+#define FLOATTOCHAR(N) [](float f) -> TCHAR* {TCHAR tchar[MAXLENGTH];  wsprintf(tchar, _T("%f"), f); return tchar;}(N)
 
 /*
 #define PI 3.1415926
@@ -28,6 +29,7 @@ class Object
 protected:
 	POINT _pos;
 	int _r;
+	int _size;
 	double _angle;
 	double _speed;
 
@@ -43,7 +45,7 @@ public:
 
 	virtual bool IsCollide(Object);
 	virtual bool IsCollide(Object*);
-	virtual void MoveOneFrame();
+	virtual void MoveOneFrame(int);
 
 	void Draw(HDC hdc);
 };
@@ -56,7 +58,7 @@ public:
 
 	int GetDamage() { return _damage; }
 
-	virtual void MoveOneFrame() override;
+	virtual void MoveOneFrame(int) override;
 };
 
 class MobObj : public Object
@@ -66,6 +68,7 @@ protected:
 	int _damage;
 public:
 	int GetDamage() { return _damage; }
+	void SetDamage(int damage) { _damage = damage; }
 	int GetHp() { return _hp; }
 	void SetHp(int hp) { _hp = hp; }
 };
@@ -75,18 +78,23 @@ class Player : public MobObj
 	int _bulletcooltime, _bulletlasttime;//총알 발사 쿨
 	//TODO:게임 관련 변수들 추가
 public:
+	//int hp, int damage, int speed, int cooltime, POINT pos
+	Player(int, int, int, int, POINT);
+
 	int GetCooltime() { return _bulletcooltime; }
 	int GetLasttime() { return _bulletlasttime; }
 	void SetCooltime(double cooltime) { _bulletcooltime = cooltime; }
 	void SetLasttime(int lasttime) { _bulletlasttime = lasttime; }
-
-	Player(int, int, int, POINT);
-	virtual void MoveOneFrame()  override;
+	
+	virtual void MoveOneFrame(int) override;
 };
 
 class Enemy1 : public MobObj
 {
-	virtual void MoveOneFrame()  override;
+public:
+	//int hp, int damage, int speed
+	Enemy1(int, int, int, POINT);
+	virtual void MoveOneFrame(int)  override;
 };
 
 class BarrierObj : public Object
@@ -102,7 +110,7 @@ class Shop
 {
 	int _maxcnt, _cnt;
 	Shop* _parent;
-	char _name[MAXLENGTH]; //not THCAR?
+	TCHAR _name[MAXLENGTH]; //not THCAR?
 	void(*_func)(Shop*, int); //upgrade or inform
 public:
 
@@ -110,7 +118,7 @@ public:
 	Shop(int, void(*)(Shop*, int), Shop*);
 	int GetMaxcnt() { return _maxcnt; }
 	int GetCnt() { return _cnt; }
-	char* GetName() { return _name; }
+	TCHAR* GetName() { return _name; }
 	void SetCnt(int cnt) { _cnt = cnt; }
 	void Update() { _func(this, 0); }
 	void Upgrade() { _func(this, 1); }
@@ -121,7 +129,10 @@ public:
 addshot
 shotdamage
 reload
+reduceplayersize
 barrier
+-damage
+-size
 gravity wave
 charge defense
 enemy move down
@@ -131,5 +142,6 @@ void Init();
 bool MoveFrame();
 void UpdateShop();
 void AddShot(Shop*, int);
+void ShotDamage(Shop*, int);
 void ShotReload(Shop*, int);
 void AddBarrier(Shop*, int);
