@@ -95,4 +95,5 @@ gravity wave
 
 void Init();
 bool MoveFrame();
-void reset(); // shop reset(only once work)
+void SetShop(); // shop reset(only once work)
+void UpdateShop();
