@@ -4,6 +4,7 @@ std::vector <BulletObj* > bullets;
 std::vector<MobObj*> enemys;
 MobObj* player;
 BarrierObj* barrier;
+std::vector<Shop*> shop;
 int coolTime=100;
 
 void Object::MoveAngleToDir()
@@ -69,6 +70,12 @@ void BarrierObj::MovePos(POINT pos)
 	_pos = pos;
 }
 
+Shop::Shop(int maxcnt,void(*)(*Shop, int) func)
+{
+	_maxcnt = maxcnt;
+	_cnt = 0;
+	_func = func
+}
 
 void Init()
 {
@@ -100,4 +107,19 @@ bool MoveFrame()
 	}*/
 
 	return true;
+}
+
+void AddShot(*Shop, int);
+
+void reset()
+{
+	shop.push_back(5, AddShot);
+}
+
+void AddShot(Shop* subject,int mode)
+{
+	if(mode == 0){ //message
+	}
+	else if(mode == 1){ //upgrage
+	}
 }
