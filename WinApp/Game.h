@@ -11,6 +11,8 @@
 
 #define R 50
 #define SPEED 10
+
+#define MAXLENGTH 80
 /*
 #define PI 3.1415926
 #define RADIAN(X) (X) * PI / 180
@@ -75,7 +77,7 @@ public:
 class Shop
 {
 	int _maxcnt, _cnt;
-	char _text[80]; //not THCAR?
+	char _text[MAXLENGTH]; //not THCAR?
 	void(*)(*Shop, int) _func; //upgrade or inform
 public:
 	Shop(int, void(*)(*Shop, int));
