@@ -2,10 +2,12 @@
 
 std::vector <BulletObj* > bullets;
 std::vector<MobObj*> enemys;
-MobObj* player;
+Player* player;
 BarrierObj* barrier;
 std::vector<Shop*> shop;
 RECT rtMapSize;
+
+clock_t nLastTime;
 
 void Object::MoveAngleToDir()
 {
@@ -35,6 +37,11 @@ bool Object::IsCollide(Object* t)
 		return dis <= (_r + t->GetR());
 }
 
+void Object::MoveOneFrame()
+{
+	throw "임시";
+}
+
 void Object::Draw(HDC hdc)
 {
 	Ellipse(hdc, (_pos.x - R) - rtMapSize.left, (_pos.y - R) - rtMapSize.top, (_pos.x + R) - rtMapSize.left, (_pos.y + R) - rtMapSize.top);
@@ -53,11 +60,14 @@ void BulletObj::MoveOneFrame()
 }
 
 
-Player::Player(int hp, int damage, POINT pos)
+Player::Player(int hp, int damage, int cooltime, POINT pos)
 {
 	_hp = hp;
 	_damage = damage;
+	_bulletcooltime = cooltime;
 	_pos = pos;
+
+	_bulletlasttime = 0;
 }
 
 void Player::MoveOneFrame()
@@ -104,13 +114,14 @@ void Player::MoveOneFrame()
 	rtMapSize.bottom += MBottom;
 
 	//Shot bullet
-	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
+	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000 && player->GetLasttime() <= 0) {
 		POINT ptMouse, ptPlayer = player->GetPos();
 		GetCursorPos(&ptMouse);
 		bullets.push_back(new BulletObj(1, 5, atan2((ptMouse.y - ptPlayer.y), (ptMouse.x - ptPlayer.x)), ptPlayer));
+		player->SetLasttime(player->GetCooltime());
 	}
 
-
+	player->SetLasttime(player->GetLasttime() - 1);
 	player->SetPos(ptPlayer);
 }
 
@@ -224,7 +235,9 @@ Shop::Shop(int maxcnt,void(*func)(Shop*, int), Shop* parent)//TODO:_name 초기화
 void Init()
 {
 	Shop* parent;
-	player = new Player(10, 10, {100,100});
+	player = new Player(10, 10, 50, {100,100});
+	nLastTime = clock();
+
 	shop.push_back(new Shop(5, AddShot));
 	shop.push_back(new Shop(1, AddBarrier));
 	parent = shop.back();
@@ -232,6 +245,8 @@ void Init()
 
 bool MoveFrame()
 {
+	int delatatime = clock() - nLastTime;
+
 	for (auto i : bullets) {
 		i->MoveOneFrame();
 	}

@@ -4,6 +4,7 @@
 #include <math.h>
 #include <vector>
 #include <string>
+#include <time.h>
 
 #define UP 0
 #define DOWN 1
@@ -41,6 +42,7 @@ public:
 
 	virtual bool IsCollide(Object);
 	virtual bool IsCollide(Object*);
+	virtual void MoveOneFrame();
 
 	void Draw(HDC hdc);
 };
@@ -53,7 +55,7 @@ public:
 
 	int GetDamage() { return _damage; }
 
-	void MoveOneFrame();
+	virtual void MoveOneFrame() override;
 };
 
 class MobObj : public Object
@@ -65,21 +67,24 @@ public:
 	int GetDamage() { return _damage; }
 	int GetHp() { return _hp; }
 	void SetHp(int hp) { _hp = hp; }
-
-	virtual void MoveOneFrame() = 0;
 };
 
 class Player : public MobObj
 {
-	int _cooltime; //게임 관련 변수들
+	int _bulletcooltime, _bulletlasttime;//총알 발사 쿨
+	//TODO:게임 관련 변수들 추가
 public:
-	Player(int, int, POINT);
-	void MoveOneFrame()  override;
+	int GetCooltime() { return _bulletcooltime; }
+	int GetLasttime() { return _bulletlasttime; }
+	void SetLasttime(int lasttime) { _bulletlasttime = lasttime; }
+
+	Player(int, int, int, POINT);
+	virtual void MoveOneFrame()  override;
 };
 
 class Enemy1 : public MobObj
 {
-	void MoveOneFrame()  override;
+	virtual void MoveOneFrame()  override;
 };
 
 class BarrierObj : public Object

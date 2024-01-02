@@ -5,13 +5,14 @@
 #include "WinApp.h"
 #include "Game.h"
 #include <stdio.h>
+#include <time.h>
 
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
 extern std::vector <BulletObj* > bullets;
 extern std::vector<MobObj*> enemys;
-extern MobObj* player;
+extern Player* player;
 extern BarrierObj* barrier;
 extern std::vector<Shop*> shop;
 extern RECT rtMapSize;
@@ -22,6 +23,7 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름�
 WCHAR szWindowClass_Shop[MAX_LOADSTRING] = _T("game shop window");
 WCHAR szWindowClass_Barrier[MAX_LOADSTRING] = _T("game barrier window");
 BOOL bShopOpen = false;
+
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE, LRESULT(*)(HWND, UINT, WPARAM, LPARAM), WCHAR*);
@@ -131,10 +133,7 @@ BOOL InitInstance_Shop(HINSTANCE hInstance, int nCmdShow)
 //Frame Func
 void Timerproc(HWND hWnd, UINT_PTR nID, UINT uElapse, TIMERPROC lpTimerFunc)
 {
-    RECT rtClient, rtWindow;
-    GetClientRect(hWnd, &rtClient);
     GetWindowRect(hWnd, &rtMapSize);
-    GetWindowRect(hWnd, &rtWindow);
 
     MoveFrame();
     
