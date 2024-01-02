@@ -75,11 +75,11 @@ public:
 class Shop
 {
 	int _maxcnt, _cnt;
-	void(*)(*Shop, int) _func; //upgrade or inform
+	void(*_func)(Shop*, int); //upgrade or inform
 public:
-	Shop(int, void(*)(*Shop, int));
-	void Upgrade() {_func(this, 1);}
-}
+	Shop(int, void(*)(Shop*, int));
+	void Upgrade() { _func(this, 1); }
+};
 /*
 ==list==
 addshot
@@ -92,3 +92,4 @@ gravity wave
 void Init();
 bool MoveFrame();
 void reset(); // shop reset(only once work)
+void AddShot(Shop*, int);

@@ -70,11 +70,11 @@ void BarrierObj::MovePos(POINT pos)
 	_pos = pos;
 }
 
-Shop::Shop(int maxcnt,void(*)(*Shop, int) func)
+Shop::Shop(int maxcnt,void(*func)(Shop*, int))
 {
 	_maxcnt = maxcnt;
 	_cnt = 0;
-	_func = func
+	_func = func;
 }
 
 void Init()
@@ -109,11 +109,11 @@ bool MoveFrame()
 	return true;
 }
 
-void AddShot(*Shop, int);
+
 
 void reset()
 {
-	shop.push_back(5, AddShot);
+	shop.push_back(new Shop(5, AddShot));//init랑 합치는게 맞는거 같은데
 }
 
 void AddShot(Shop* subject,int mode)
