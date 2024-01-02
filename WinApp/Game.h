@@ -19,7 +19,7 @@
 #define RADIAN(X) (X) * PI / 180
 */
 
-class Object //¸ðµç ¹°Ã¼´Â ¿øÀ¸·Î ÇÔ 
+class Object
 {
 protected:
 	POINT _pos;
@@ -37,8 +37,8 @@ public:
 	void SetPos(POINT pos) { _pos = pos; }
 	int GetR() { return _r; }
 
-	bool IsCollide(Object);
-	bool IsCollide(Object*);
+	virtual bool IsCollide(Object);
+	virtual bool IsCollide(Object*);
 
 	void Draw(HDC hdc, RECT rtWindow);
 };
@@ -56,11 +56,10 @@ public:
 
 class MobObj : public Object
 {
+protected:
 	int _hp;
 	int _damage;
 public:
-	MobObj(int, int, POINT);
-
 	int GetDamage() { return _damage; }
 	int GetHp() { return _hp; }
 	void SetHp(int hp) { _hp = hp; }
@@ -71,12 +70,14 @@ public:
 class Player : public MobObj
 {
 	int _cooltime; //게임 관련 변수들
-	void MoveOneFrame();
+public:
+	Player(int, int, POINT);
+	void MoveOneFrame()  override;
 };
 
 class Enemy1 : public MobObj
 {
-	void MoveOneFrame();
+	void MoveOneFrame()  override;
 };
 
 class BarrierObj : public Object
@@ -92,7 +93,7 @@ class Shop
 {
 public:
 	int _maxcnt, _cnt;
-	Shop* parent;
+	Shop* _parent;
 	char _name[MAXLENGTH]; //not THCAR?
 	void(*_func)(Shop*, int); //upgrade or inform
 
@@ -100,7 +101,7 @@ public:
 	Shop(int, void(*)(Shop*, int), Shop*);
 	void Update() { _func(this, 0); }
 	void Upgrade() { _func(this, 1); }
-	bool IsVisiable() {return parent->_cnt!=0;}
+	bool IsVisiable() {return _parent->_cnt!=0;}
 };
 /*
 ==list==

@@ -53,7 +53,7 @@ void BulletObj::MoveOneFrame()
 }
 
 
-MobObj::MobObj(int hp, int damage, POINT pos)
+Player::Player(int hp, int damage, POINT pos)
 {
 	_hp = hp;
 	_damage = damage;
@@ -99,16 +99,16 @@ bool BarrierObj::IsCollide(Object t)
 		case 14:
 			return _pos.y + _r/2 <= (t.GetR());
 		case 5:
-			vertex = {_pos.x - _r/2, _pos.y - r/2};
+			vertex = {_pos.x - _r/2, _pos.y - _r/2};
 			break;
 		case 7:
-			vertex = {_pos.x + _r/2, _pos.y - r/2};
+			vertex = {_pos.x + _r/2, _pos.y - _r/2};
 			break;
 		case 13:
-			vertex = {_pos.x - _r/2, _pos.y + r/2};
+			vertex = {_pos.x - _r/2, _pos.y + _r/2};
 			break;
 		case 15:
-			vertex = {_pos.x - _r/2, _pos.y + r/2};
+			vertex = {_pos.x - _r/2, _pos.y + _r/2};
 			break;
 	}
 	long long int dis = (vertex.x - tpos.x) * (vertex.x - tpos.x) + (vertex.y - tpos.y) * (vertex.y - tpos.y);
@@ -139,16 +139,16 @@ bool BarrierObj::IsCollide(Object* t)
 		case 14:
 			return _pos.y + _r/2 <= (t->GetR());
 		case 5:
-			vertex = {_pos.x - _r/2, _pos.y - r/2};
+			vertex = {_pos.x - _r/2, _pos.y - _r/2};
 			break;
 		case 7:
-			vertex = {_pos.x + _r/2, _pos.y - r/2};
+			vertex = {_pos.x + _r/2, _pos.y - _r/2};
 			break;
 		case 13:
-			vertex = {_pos.x - _r/2, _pos.y + r/2};
+			vertex = {_pos.x - _r/2, _pos.y + _r/2};
 			break;
 		case 15:
-			vertex = {_pos.x - _r/2, _pos.y + r/2};
+			vertex = {_pos.x - _r/2, _pos.y + _r/2};
 			break;
 	}
 	long long int dis = (vertex.x - tpos.x) * (vertex.x - tpos.x) + (vertex.y - tpos.y) * (vertex.y - tpos.y);
@@ -159,7 +159,7 @@ Shop::Shop(int maxcnt,void(*func)(Shop*, int))
 {
 	_maxcnt = maxcnt;
 	_cnt = 0;
-	parent = NULL;
+	_parent = NULL;
 	_func = func;
 }
 
@@ -174,7 +174,7 @@ Shop::Shop(int maxcnt,void(*func)(Shop*, int), Shop* parent)
 void Init()
 {
 	Shop* parent;
-	player = new MobObj(10, 10, {100,100});
+	player = new Player(10, 10, {100,100});
 	shop.push_back(new Shop(5, AddShot));
 	shop.push_back(new Shop(1, AddBarrier));
 	parent = shop.back();
@@ -224,7 +224,7 @@ void AddShot(Shop* subject,int mode)
 	if(mode == 0){ //message
 		char text[MAXLENGTH] = "Fire ";
 		strcat(text, IntToChar(subject->_cnt));
-		if(_cnt != _maxcnt){
+		if(subject->_cnt != subject->_maxcnt){
 			strcat(text, "(");
 			strcat(text, IntToChar(subject->_cnt+1));
 			strcat(text, ")");
@@ -239,8 +239,7 @@ void AddShot(Shop* subject,int mode)
 void AddBarrier(Shop* subject,int mode)
 {
 	if(mode == 0){ //message
-		char text[MAXLENGTH] = cnt==1?"(Add Barrier)":"Add Barrier";
-		strcpy(subject->_name, text);
+		strcpy(subject->_name, ((subject->_cnt) == 1 ? "(Add Barrier)" : "Add Barrier"));
 	}
 	else if(mode == 1){ //upgrage
 	}

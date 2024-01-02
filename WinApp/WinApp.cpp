@@ -253,45 +253,49 @@ LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 		}
 		break;
 	case WM_LBUTTONDOWN:
-		POINT pt;
-		pt.x = GET_X_LPARAM(lParam);
-		pt.y = GET_Y_LPARAM(lParam);
-		break; //"break;" is out of parentheses in window example code
+    {
+        POINT pt;
+        pt.x = LOWORD(lParam);
+        pt.y = HIWORD(lParam);
+        break; //"break;" is out of parentheses in window example code
+    }
 	case WM_MOUSEWHEEL:
-		int zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
-		/*if(zDelta < 0)zDelta = -4;
-		else if(zDelta > 0)zDelta = 4;*/
-		scroll += zDelta;
-		//Maybe I should make scrollbar
-		break;
+    {
+        int zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
+        /*if(zDelta < 0)zDelta = -4;
+        else if(zDelta > 0)zDelta = 4;*/
+        scroll += zDelta;
+        //Maybe I should make scrollbar
+        break;
+    }
 	case WM_PAINT:
-    	{
-		PAINTSTRUCT ps;
-		HDC hdc = BeginPaint(hWnd, &ps);
+    {
+	    PAINTSTRUCT ps;
+	    HDC hdc = BeginPaint(hWnd, &ps);
 	        
-		int len = shop.size();
-		int printy=50 - scroll;  //if add title, y is different each index
-		for(int i=0;i<len;i++){
-			//text
-			//square
-			for(int j=0;j<shop[i]->_maxcnt;j++){
-				if(j<shop[i]->_cnt)SetDCPenColor(hdc, RGB(200, 0, 0));  //alternative : use graypen and not fill
-				else SetDCPenColor(hdc, RGB(0, 200, 0));
-				Rectangle(hdc, 50 + j * 60, printy, 100 + j * 60, printy + 30);
-			}
-			//upgradebutton
-			SetDCPenColor(hdc, RGB(30, 30, 200));
-			Rectangle(hdc, 430, printy, 460, printy + 30);
+	    int len = shop.size();
+	    int printy=50 - scroll;  //if add title, y is different each index
+	    for(int i=0;i<len;i++){
+		    //text
+		    //square
+		    for(int j=0;j<shop[i]->_maxcnt;j++){
+			    if(j<shop[i]->_cnt)SetDCPenColor(hdc, RGB(200, 0, 0));  //alternative : use graypen and not fill
+			    else SetDCPenColor(hdc, RGB(0, 200, 0));
+			    Rectangle(hdc, 50 + j * 60, printy, 100 + j * 60, printy + 30);
+		    }
+		    //upgradebutton
+		    SetDCPenColor(hdc, RGB(30, 30, 200));
+		    Rectangle(hdc, 430, printy, 460, printy + 30);
 
-			printy += 100;
-		}
+		    printy += 100;
+	    }
 		
-		EndPaint(hWnd, &ps);
-		break;
-    	}
+	    EndPaint(hWnd, &ps);
+	    break;
+    }
 	case WM_DESTROY:
-	        bShopOpen = false;
-	        DestroyWindow(hWnd);
+	    bShopOpen = false;
+	    DestroyWindow(hWnd);
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
