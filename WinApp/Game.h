@@ -16,6 +16,7 @@
 #define MAXLENGTH 80
 
 #define INTTOCHAR(N) (std::to_string(N).c_str())
+#define FLOATTOCHAR(N) [](float f) -> char* {char cVal[MAXLENGTH];  sprintf(cVal, "%f", f); return cVal;}(N)
 
 /*
 #define PI 3.1415926
@@ -76,6 +77,7 @@ class Player : public MobObj
 public:
 	int GetCooltime() { return _bulletcooltime; }
 	int GetLasttime() { return _bulletlasttime; }
+	void SetCooltime(double cooltime) { _bulletcooltime = cooltime; }
 	void SetLasttime(int lasttime) { _bulletlasttime = lasttime; }
 
 	Player(int, int, int, POINT);
@@ -98,14 +100,18 @@ public:
 
 class Shop
 {
-public:
 	int _maxcnt, _cnt;
 	Shop* _parent;
 	char _name[MAXLENGTH]; //not THCAR?
 	void(*_func)(Shop*, int); //upgrade or inform
+public:
 
 	Shop(int, void(*)(Shop*, int));
 	Shop(int, void(*)(Shop*, int), Shop*);
+	int GetMaxcnt() { return _maxcnt; }
+	int GetCnt() { return _cnt; }
+	char* GetName() { return _name; }
+	void SetCnt(int cnt) { _cnt = cnt; }
 	void Update() { _func(this, 0); }
 	void Upgrade() { _func(this, 1); }
 	bool IsVisiable() {return _parent->_cnt!=0;}
@@ -123,7 +129,7 @@ enemy move down
 
 void Init();
 bool MoveFrame();
-void SetShop(); // shop reset(only once work)
 void UpdateShop();
 void AddShot(Shop*, int);
+void ShotReload(Shop*, int);
 void AddBarrier(Shop*, int);

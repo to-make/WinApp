@@ -221,6 +221,7 @@ Shop::Shop(int maxcnt,void(*func)(Shop*, int))//TODO:_name 초기화
 	_maxcnt = maxcnt;
 	_cnt = 0;
 	_parent = NULL;
+	memset(_name, 0, sizeof(char) * MAXLENGTH);
 	_func = func;
 }
 
@@ -229,6 +230,7 @@ Shop::Shop(int maxcnt,void(*func)(Shop*, int), Shop* parent)//TODO:_name 초기화
 	_maxcnt = maxcnt;
 	_cnt = 0;
 	_parent = parent;
+	memset(_name, 0, sizeof(char) * MAXLENGTH);
 	_func = func;
 }
 
@@ -282,25 +284,53 @@ void UpdateShop()
 
 void AddShot(Shop* subject,int mode)
 {
+	int scnt = subject->GetCnt();
+	int smaxcnt = subject->GetMaxcnt();
+	char* sname = subject->GetName();
 	if(mode == 0){ //message
 		char text[MAXLENGTH] = "Fire ";
-		strcat(text, INTTOCHAR(subject->_cnt));
-		if(subject->_cnt != subject->_maxcnt){
+		strcat(text, INTTOCHAR(scnt));
+		if(scnt != smaxcnt){
 			strcat(text, "(");
-			strcat(text, INTTOCHAR(subject->_cnt+1));
+			strcat(text, INTTOCHAR(scnt+1));
 			strcat(text, ")");
 		}
-		strcat(text, ((subject->_cnt)==1?" bullet":" bullets"));
-		strcpy(subject->_name, text);
+		strcat(text, (scnt==1?" bullet":" bullets"));
+		strcpy(sname, text);
 	}
 	else if(mode == 1){ //upgrage
 	}
 }
 
+void ShotReload(Shop* subject, int mode)
+{
+	int scnt = subject->GetCnt();
+	int smaxcnt = subject->GetMaxcnt();
+	char* sname = subject->GetName();
+	if (mode == 0) { //message
+		char text[MAXLENGTH] = "Reload speed is ";
+		strcat(text, INTTOCHAR(player->GetCooltime()));
+		if (scnt != smaxcnt) {
+			strcat(text, "(");
+			strcat(text, FLOATTOCHAR(player->GetCooltime() - 0.1));
+			strcat(text, ")");
+		}
+		strcat(text, "seconds");
+		strcpy(sname, text);
+	}
+	else if (mode == 1) { //upgrage
+		subject->SetCnt(scnt + 1);
+		player->SetCooltime(player->GetCooltime() - 0.1);
+	}
+}
+
 void AddBarrier(Shop* subject,int mode)
 {
+	int scnt = subject->GetCnt();
+	int smaxcnt = subject->GetMaxcnt();
+	char* sname = subject->GetName();
 	if(mode == 0){ //message
-		strcpy(subject->_name, ((subject->_cnt) == 1 ? "(Add Barrier)" : "Add Barrier"));
+		strcpy(sname, (scnt == 1 ? "(Add Barrier)" : "Add Barrier"));
 	}
 	else if(mode == 1){ //upgrage
 	}
