@@ -70,6 +70,29 @@ void BarrierObj::MovePos(POINT pos)
 	_pos = pos;
 }
 
+bool IsCollide(Object t)
+{
+	POINT tpos = t->GetPos(), vertex;
+	
+	int x = 0, y = 0,check;
+	if(_pos.x - _r > tpos.x)x = 1;
+	else if(_pos.x + _r < tpos.x)x = 3;
+	else x = 2;
+	if(_pos.y - _r > tpos.y)y = 1;
+	else if(_pos.y + _r < tpos.y)y = 3;
+	else y = 2;
+	check = (y<<2) | x;
+	switch(check)
+	{
+		case 5:
+		case 7:
+		case 13:
+		case 15:
+			long long int dis = (vertex.x - tpos.x) * (vertex.x - tpos.x) + (vertex.y - tpos.y) * (vertex.y - tpos.y);
+			return dis <= (t->GetR());
+	}
+}
+
 Shop::Shop(int maxcnt,void(*func)(Shop*, int))
 {
 	_maxcnt = maxcnt;
@@ -113,7 +136,7 @@ bool MoveFrame()
 
 void SetShop()
 {
-	shop.push_back(new Shop(5, AddShot));//init╤Ш гуд║╢б╟т ╦б╢б╟е ╟╟ю╨╣╔
+	shop.push_back(new Shop(5, AddShot));//initК·▒ М∙╘Л╧≤К┼■Й╡▄ К╖·К┼■Й╠╟ Й╟≥Л²─К█╟
 }
 
 void UpdateShop()
