@@ -16,7 +16,7 @@
 #define RADIAN(X) (X) * PI / 180
 */
 
-class Object //¸ðµç ¹°Ã¼´Â ¿øÀ¸·Î ÇÔ 
+class Object //Â¸Ã°ÂµÃ§ Â¹Â°ÃƒÂ¼Â´Ã‚ Â¿Ã¸Ã€Â¸Â·ÃŽ Ã‡Ã” 
 {
 protected:
 	POINT _pos;
@@ -74,3 +74,5 @@ public:
 
 void Init();
 bool MoveFrame();
+
+//test
