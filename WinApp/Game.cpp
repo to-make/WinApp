@@ -111,12 +111,17 @@ bool MoveFrame()
 
 void AddShot(*Shop, int);
 
-void reset()
+void SetShop()
 {
 	shop.push_back(5, AddShot);
 }
 
-char* IntToChar(int n)
+void UpdateShop()
+{
+	for(Shop* i : shop)i->Update();
+}
+
+char* IntToChar(int n) //can I not declare in game.h?
 {
 	std::string tmp = std::to_string(n);
 	//char const *num_char = tmp.c_str();
