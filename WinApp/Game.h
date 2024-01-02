@@ -81,12 +81,15 @@ class Shop
 {
 public:
 	int _maxcnt, _cnt;
+	Shop* parent;
 	char _name[MAXLENGTH]; //not THCAR?
 	void(*_func)(Shop*, int); //upgrade or inform
 
 	Shop(int, void(*)(Shop*, int));
+	Shop(int, void(*)(Shop*, int, int));
 	void Update() { _func(this, 0); }
 	void Upgrade() { _func(this, 1); }
+	bool IsVisiable() {return parent->_cnt!=0;}
 };
 /*
 ==list==
@@ -95,6 +98,8 @@ shotdamage
 reload
 barrier
 gravity wave
+charge defense
+enemy move down
 */
 
 void Init();
