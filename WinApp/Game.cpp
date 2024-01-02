@@ -160,6 +160,7 @@ Shop::Shop(int maxcnt,void(*func)(Shop*, int))
 void Init()
 {
 	player = new MobObj(10, 10, {100,100});
+	shop.push_back(new Shop(5, AddShot)); //init랑 합치는게 맞는거 같은데 -> ok
 }
 
 bool MoveFrame()
@@ -187,13 +188,6 @@ bool MoveFrame()
 	}*/
 
 	return true;
-}
-
-
-
-void SetShop()
-{
-	shop.push_back(new Shop(5, AddShot));//init랑 합치는게 맞는거 같은데
 }
 
 void UpdateShop()
