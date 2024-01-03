@@ -110,16 +110,17 @@ class Shop
 {
 	int _maxcnt, _cnt;
 	Shop* _parent;
-	TCHAR _name[MAXLENGTH]; //not THCAR?
+	TCHAR _name[MAXLENGTH],_description[MAXLENGTH];
 	void(*_message)(Shop*, int);
 	void(*_upgrade)(Shop*, int);
 public:
 
-	Shop(int, void(*)(Shop*, int));
-	Shop(int, void(*)(Shop*, int), Shop*);
+	Shop(*TCHAR, int, void(*)(Shop*, int));
+	Shop(*TCHAR, int, void(*)(Shop*, int), Shop*);
 	int GetMaxcnt() { return _maxcnt; }
 	int GetCnt() { return _cnt; }
 	TCHAR* GetName() { return _name; }
+	TCHAR* GetDescription() { return _description; }
 	void SetCnt(int cnt) { _cnt = cnt; }
 	void UpdateMessage() { _message(this); }
 	void Upgrade() { _upgrade(this); _message(this); }
