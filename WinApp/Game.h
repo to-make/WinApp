@@ -117,8 +117,8 @@ class Shop
 	void(*_upgrade)(Shop*, int);
 public:
 
-	Shop(*TCHAR, int, void(*)(Shop*, int));
-	Shop(*TCHAR, int, void(*)(Shop*, int), Shop*);
+	Shop(TCHAR*, int, void(*)(Shop*, int));
+	Shop(TCHAR*, int, void(*)(Shop*, int), Shop*);
 	int GetMaxcnt() { return _maxcnt; }
 	int GetCnt() { return _cnt; }
 	TCHAR* GetName() { return _name; }

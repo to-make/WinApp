@@ -17,7 +17,7 @@ extern Player* player;
 extern BarrierObj* barrier;
 extern std::vector<Shop*> shop;
 extern RECT rtMapSize;
-extern int* ShopChoice
+extern int ShopChoice[3];
 
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
