@@ -8,6 +8,7 @@ std::vector<Shop*> shop;
 RECT rtMapSize;
 
 clock_t nLastTime;
+int ShopChoice[3];
 
 void Object::MoveAngleToDir()
 {
@@ -224,6 +225,8 @@ Shop::Shop(int maxcnt,void(*func)(Shop*, int), Shop* parent)//TODO:_name 초기�
 void Init()
 {
 	Shop* parent;
+	srand(time(NULL));
+	
 	player = new Player(10, 10,SPEED, 50, {100,100});
 	nLastTime = clock();
 
@@ -272,9 +275,16 @@ bool MoveFrame()
 	return true;
 }
 
-void UpdateShop()
-{
-	for(Shop* i : shop)i->Update();
+void UpdateShopChoice()
+	static bool check[SHOPLENGTH] = {0,};
+	for(int i=0;i<3;i++){
+		check[ShopChoice[i]] = false;
+		int g = rand()%SHOPLENGTH;
+		while(check[g] || shop[g]->GetMaxcnt() == shop[g]->GetCnt())g = rand()%SHOPLENGTH;
+		check[g] = true;
+		ShopChoice[i] = g;
+		shop[g]->UpdateMessage();
+	}
 }
 
 void AddShotMessage(Shop* subject)
