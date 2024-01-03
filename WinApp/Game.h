@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <time.h>
+#include <cstdlib>
 
 #define UP 0
 #define DOWN 1
@@ -15,6 +16,7 @@
 #define R 50
 #define SPEED 10
 #define MAXLENGTH 80
+#define SHOPLENGTH 4
 
 #define INTTOCHAR(N) [](int n) -> TCHAR* {TCHAR tchar[MAXLENGTH];  wsprintf(tchar, _T("%d)"), n); return tchar;}(N)
 #define FLOATTOCHAR(N) [](float f) -> TCHAR* {TCHAR tchar[MAXLENGTH];  wsprintf(tchar, _T("%f"), f); return tchar;}(N)
@@ -142,7 +144,7 @@ enemy move down
 
 void Init();
 bool MoveFrame();
-void UpdateShop();
+void UpdateShopChoice();
 void AddShotMessage(Shop*);
 void AddShotUpgrade(Shop*);
 void ShotDamageMessage(Shop*);
