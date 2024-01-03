@@ -190,7 +190,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static int scroll=0;
-    static HFONT hFont100,hFont500;
+	static HFONT hFont100,hFont500;
 	switch (message)
 	{
 	case WM_CREATE:
@@ -205,61 +205,61 @@ LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 		case 0x50:
 		case 0x70:
 			bShopOpen = false;
-            		DestroyWindow(hWnd);
+			DestroyWindow(hWnd);
 			break;
 		}
 		break;
 	case WM_LBUTTONDOWN:
-    {
-        POINT pt;
-        pt.x = LOWORD(lParam);
-        pt.y = HIWORD(lParam);
-        break; //"break;" is out of parentheses in window example code
-    }
+	{
+		POINT pt;
+		pt.x = LOWORD(lParam);
+		pt.y = HIWORD(lParam);
+		break; //"break;" is out of parentheses in window example code
+	}
 	case WM_MOUSEWHEEL:
-    {
-        int zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
-        /*if(zDelta < 0)zDelta = -4;
-        else if(zDelta > 0)zDelta = 4;*/
-        scroll += zDelta;
-		InvalidateRect(hWnd, NULL, TRUE);
-        //Maybe I should make scrollbar
-        break;
-    }
+	{
+		int zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
+		/*if(zDelta < 0)zDelta = -4;
+		else if(zDelta > 0)zDelta = 4;*/
+		scroll += zDelta;
+			InvalidateRect(hWnd, NULL, TRUE);
+		//Maybe I should make scrollbar
+		break;
+	}
 	case WM_PAINT:
-    {
-	    PAINTSTRUCT ps;
-	    HDC hdc = BeginPaint(hWnd, &ps);
-        RECT rt;
-        GetClientRect(hWnd, &rt);
-
+	{
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(hWnd, &ps);
+		RECT rt;
+		GetClientRect(hWnd, &rt);
+	
 		HFONT hOldFont = (HFONT)SelectObject(hdc, hFont100);
 		DrawText(hdc, _T("Shop"), -1, &rt, DT_CENTER);
 		SelectObject(hdc, hFont50);
-	        
-	    size_t len = shop.size();
-	    int printy=90 - scroll;  //if add title, y is different each index
-	    for(int i=0;i<len;i++){
+		
+		size_t len = shop.size();
+		int printy=90 - scroll;  //if add title, y is different each index
+		for(int i=0;i<len;i++){
 			shop[i]->UpdateMessage();
 			int scnt = shop[i]->GetCnt();
 			int smaxcnt = shop[i]->GetMaxcnt();
-		    //text
-		    //square
-		    for(int j=0;j<smaxcnt;j++){
+			//text
+			//square
+			for(int j=0;j<smaxcnt;j++){
 			    if(j<scnt)SetDCPenColor(hdc, RGB(200, 0, 0));  //alternative : use graypen and not fill
 			    else SetDCPenColor(hdc, RGB(0, 200, 0));
 			    Rectangle(hdc, 50 + j * 60, printy, 100 + j * 60, printy + 30);
-		    }
-		    //upgradebutton
-		    SetDCPenColor(hdc, RGB(30, 30, 200));
-		    Rectangle(hdc, 430, printy, 460, printy + 30);
-
-		    printy += 100;
-	    }
+			}
+			//upgradebutton
+			SetDCPenColor(hdc, RGB(30, 30, 200));
+			Rectangle(hdc, 430, printy, 460, printy + 30);
+			
+			printy += 100;
+		}
 		
-	    EndPaint(hWnd, &ps);
-	    break;
-    }
+		EndPaint(hWnd, &ps);
+		break;
+	}
 	case WM_DESTROY:
 	    bShopOpen = false;
 	    DestroyWindow(hWnd);
