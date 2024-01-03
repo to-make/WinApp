@@ -154,9 +154,7 @@ bool BarrierObj::IsCollide(Object t)
 	POINT tpos = t.GetPos();
 	return (pow(abs((((_pos.x-_r/2<=tpos.x?2:0)|((_pos.x-_r/2>tpos.x||_pos.x+_r/2<tpos.x)?1:0))-2))*(pos.x + _r*(((_pos.x-_r/2<=tpos.x?2:0)|((_pos.x-_r/2>tpos.x||_pos.x+_r/2<tpos.x)?1:0))-2) - tpos.x), 2)
 		+ pow(abs((((_pos.y-_r/2<=tpos.y?2:0)|((_pos.y-_r/2>tpos.y||_pos.y+_r/2<tpos.y)?1:0))-2))*(pos.y + _r*(((_pos.y-_r/2<=tpos.y?2:0)|((_pos.y-_r/2>tpos.y||_pos.y+_r/2<tpos.y)?1:0))-2) - tpos.y), 2)
-		<= pow(t.GetR(),2)) 
-		&& (((((_pos.x-_r/2<=tpos.x?2:0)|((_pos.x-_r/2>tpos.x||_pos.x+_r/2<tpos.x)?1:0))-2) != 0)
-		  ||((((_pos.y-_r/2<=tpos.y?2:0)|((_pos.y-_r/2>tpos.y||_pos.y+_r/2<tpos.y)?1:0))-2)!=0));
+		<= pow(t.GetR(),2)) ;
 }
 
 bool BarrierObj::IsCollide(Object* t)
@@ -165,9 +163,7 @@ bool BarrierObj::IsCollide(Object* t)
 	POINT tpos = t->GetPos();
 	return (pow(abs((((_pos.x-_r/2<=tpos.x?2:0)|((_pos.x-_r/2>tpos.x||_pos.x+_r/2<tpos.x)?1:0))-2))*(pos.x + _r*(((_pos.x-_r/2<=tpos.x?2:0)|((_pos.x-_r/2>tpos.x||_pos.x+_r/2<tpos.x)?1:0))-2) - tpos.x), 2)
 		+ pow(abs((((_pos.y-_r/2<=tpos.y?2:0)|((_pos.y-_r/2>tpos.y||_pos.y+_r/2<tpos.y)?1:0))-2))*(pos.y + _r*(((_pos.y-_r/2<=tpos.y?2:0)|((_pos.y-_r/2>tpos.y||_pos.y+_r/2<tpos.y)?1:0))-2) - tpos.y), 2)
-		<= pow(t->GetR(),2)) 
-		&& (((((_pos.x-_r/2<=tpos.x?2:0)|((_pos.x-_r/2>tpos.x||_pos.x+_r/2<tpos.x)?1:0))-2) != 0)
-		  ||((((_pos.y-_r/2<=tpos.y?2:0)|((_pos.y-_r/2>tpos.y||_pos.y+_r/2<tpos.y)?1:0))-2)!=0));
+		<= pow(t->GetR(),2));
 	
 	/*POINT tpos = t->GetPos(), vertex;
 	int x = 0, y = 0,check;
