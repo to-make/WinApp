@@ -6,6 +6,7 @@
 #include "Game.h"
 #include <stdio.h>
 #include <time.h>
+#include <cstdlib>
 
 #define MAX_LOADSTRING 100
 
@@ -16,6 +17,7 @@ extern Player* player;
 extern BarrierObj* barrier;
 extern std::vector<Shop*> shop;
 extern RECT rtMapSize;
+extern int* ShopChoice
 
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
@@ -41,38 +43,40 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
-    // TODO: 여기에 코드를 입력합니다.
-
-    //콘솔창 살리기
-    AllocConsole();
-    freopen("CONOUT$", "wt", stdout);
-
-    // 전역 문자열을 초기화합니다.
-    LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
+	// TODO: 여기에 코드를 입력합니다.
+	
+	//콘솔창 살리기
+	AllocConsole();
+	freopen("CONOUT$", "wt", stdout);
+	
+	// 전역 문자열을 초기화합니다.
+	LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	LoadStringW(hInstance, IDC_WINAPP, szWindowClass, MAX_LOADSTRING);
-    MyRegisterClass(hInstance, WndProc, szWindowClass);
-    MyRegisterClass(hInstance, WndProc_Shop, szWindowClass_Shop);
-    MyRegisterClass(hInstance, WndProc_Barrier, szWindowClass_Barrier);
+	MyRegisterClass(hInstance, WndProc, szWindowClass);
+	MyRegisterClass(hInstance, WndProc_Shop, szWindowClass_Shop);
+	MyRegisterClass(hInstance, WndProc_Barrier, szWindowClass_Barrier);
 
-    // 애플리케이션 초기화를 수행합니다:
-    if (!InitInstance(hInstance, nCmdShow))
-    {
-        return FALSE;
-    }
-
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WINAPP));
-
-    MSG msg;
-
-    // 기본 메시지 루프입니다:
-    while (GetMessage(&msg, nullptr, 0, 0))
-    {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
-
-    FreeConsole();
-    return (int) msg.wParam;
+	srand(time(NULL));
+	
+	// 애플리케이션 초기화를 수행합니다:
+	if (!InitInstance(hInstance, nCmdShow))
+	{
+		return FALSE;
+	}
+	
+	HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WINAPP));
+	
+	MSG msg;
+	
+	// 기본 메시지 루프입니다:
+	while (GetMessage(&msg, nullptr, 0, 0))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+	
+	FreeConsole();
+	return (int) msg.wParam;
 }
 
 ATOM MyRegisterClass(HINSTANCE hInstance, LRESULT (*WndProc)(HWND, UINT, WPARAM, LPARAM), WCHAR* name)
@@ -116,18 +120,18 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 BOOL InitInstance_Shop(HINSTANCE hInstance, int nCmdShow)
 {
-   HWND hWnd = CreateWindowW(szWindowClass_Shop, szTitle, WS_POPUP|WS_VISIBLE,//WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, 420,400, nullptr, nullptr, hInstance, nullptr);
-
-   if (!hWnd)
-   {
-      return FALSE;
-   }
-
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
-
-   return TRUE;
+	HWND hWnd = CreateWindowW(szWindowClass_Shop, szTitle, WS_POPUP|WS_VISIBLE,//WS_OVERLAPPEDWINDOW,
+	CW_USEDEFAULT, 0, 1200,1200, nullptr, nullptr, hInstance, nullptr);
+	
+	if (!hWnd)
+	{
+		return FALSE;
+	}
+	
+	ShowWindow(hWnd, nCmdShow);
+	UpdateWindow(hWnd);
+	
+	return TRUE;
 }
 
 //Frame Func
@@ -189,13 +193,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	static HFONT hFont100,hFont50,hFont30;
 	static int scroll=0;
-    static HFONT hFont;
 	switch (message)
 	{
 	case WM_CREATE:
-		hFont = CreateFont(100, 0, 0, 0, FW_NORMAL, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, 0, _T("명조"));
-		UpdateShop();
+		hFont100 = CreateFont(100, 0, 0, 0, FW_NORMAL, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, 0, _T("명조"));
+		hFont50 = CreateFont(50, 0, 0, 0, FW_NORMAL, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, 0, _T("명조"));
+		hFont30 = CreateFont(30, 0, 0, 0, FW_NORMAL, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, 0, _T("명조"));
+		UpdateShopChoice();
 		break;
 	case WM_KEYDOWN:
 		switch (wParam)
@@ -204,63 +210,70 @@ LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 		case 0x50:
 		case 0x70:
 			bShopOpen = false;
-            		DestroyWindow(hWnd);
+			DestroyWindow(hWnd);
 			break;
 		}
 		break;
 	case WM_LBUTTONDOWN:
-    {
-        POINT pt;
-        pt.x = LOWORD(lParam);
-        pt.y = HIWORD(lParam);
-        break; //"break;" is out of parentheses in window example code
-    }
-	case WM_MOUSEWHEEL:
-    {
-        int zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
-        /*if(zDelta < 0)zDelta = -4;
-        else if(zDelta > 0)zDelta = 4;*/
-        scroll += zDelta;
+	{
+		POINT pt;
+		pt.x = LOWORD(lParam);
+		pt.y = HIWORD(lParam);
+		break; //"break;" is out of parentheses in window example code
+	}
+	/*case WM_MOUSEWHEEL:
+	{
+		int zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
+		scroll += zDelta;
 		InvalidateRect(hWnd, NULL, TRUE);
-        //Maybe I should make scrollbar
-        break;
-    }
+		//Maybe I should make scrollbar
+		break;
+	}*/
 	case WM_PAINT:
-    {
-	    PAINTSTRUCT ps;
-	    HDC hdc = BeginPaint(hWnd, &ps);
-        RECT rt;
-        GetClientRect(hWnd, &rt);
+	{
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(hWnd, &ps);
+		RECT TextArea;
+		GetClientRect(hWnd, &TextArea);
+	
+		HFONT hOldFont = (HFONT)SelectObject(hdc, hFont100);
+		DrawText(hdc, _T("Shop"), -1, &TextArea, DT_CENTER);
 
-		HFONT hOldFont = (HFONT)SelectObject(hdc, hFont);
-		DrawText(hdc, _T("Shop"), -1, &rt, DT_CENTER);
-		SelectObject(hdc, hOldFont);
-	        
-	    size_t len = shop.size();
-	    int printy=90 - scroll;  //if add title, y is different each index
-	    for(int i=0;i<len;i++){
-		    //text
-		    //square
+		for(int i : ShopChoice){
 			int scnt = shop[i]->GetCnt();
 			int smaxcnt = shop[i]->GetMaxcnt();
-		    for(int j=0;j<smaxcnt;j++){
-			    if(j<scnt)SetDCPenColor(hdc, RGB(200, 0, 0));  //alternative : use graypen and not fill
-			    else SetDCPenColor(hdc, RGB(0, 200, 0));
-			    Rectangle(hdc, 50 + j * 60, printy, 100 + j * 60, printy + 30);
-		    }
-		    //upgradebutton
-		    SetDCPenColor(hdc, RGB(30, 30, 200));
-		    Rectangle(hdc, 430, printy, 460, printy + 30);
+			int center = 300 + i*300;
+			int width = 200/smaxcnt;
 
-		    printy += 100;
-	    }
+			//square
+			
+			//text
+			//DrawText(hdc,szTemp, strlen(szTemp) ,&TextArea, DT_CENTER );
+			SetTextAlign(hdc, TA_CENTER);
+			SelectObject(hdc, hFont50);
+			TextOut(hdc, center, 300, shop[i]->GetName(), lstrlen(shop[i]->GetName()));
+			SelectObject(hdc, hFont30);
+			TextArea = {center-100, 450, center+100, 1100};
+			DrawText(hdc,shop[i]->GetDescription(), lstrlen(shop[i]->GetDescription()) ,&TextArea, DT_CENTER | DT_TOP);
+			//TextOut(hdc, center, 450, shop[i]->GetDescription(), lstrlen(shop[i]->GetDescription()));
+			
+			//bar
+			for(int j=0;j<smaxcnt;j++){
+				if(j<scnt)SetDCPenColor(hdc, RGB(200, 0, 0));  //alternative : use graypen and not fill
+				else if(j==scnt)SetDCPenColor(hdc, RGB(0, 0, 200));
+				else SetDCPenColor(hdc, RGB(0, 200, 0));
+				Rectangle(hdc, center - smaxcnt*width/2 + j*width, 380, center - smaxcnt*width/2 + j*width, 390);
+			}
+			
+			//upgradebutton
+		}
 		
-	    EndPaint(hWnd, &ps);
-	    break;
-    }
+		EndPaint(hWnd, &ps);
+		break;
+	}
 	case WM_DESTROY:
-	    bShopOpen = false;
-	    DestroyWindow(hWnd);
+		bShopOpen = false;
+		DestroyWindow(hWnd);
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
@@ -272,30 +285,30 @@ LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 
 LRESULT CALLBACK WndProc_Barrier(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    static HBRUSH hBrush;
+	static HBRUSH hBrush;
 	switch (message)
 	{
 	case WM_CREATE:
-        hBrush = CreateHatchBrush(HS_BDIAGONAL, RGB(255, 0, 0));
+		hBrush = CreateHatchBrush(HS_BDIAGONAL, RGB(255, 0, 0));
 		break;
 	case WM_KEYDOWN:
 		break;
-    case WM_MOVE:
-        barrier->MovePos(POINT({ 1, 1 }));
-        break;
+	case WM_MOVE:
+		barrier->MovePos(POINT({ 1, 1 }));
+		break;
 	case WM_PAINT:
 	{
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
-
-        POINT pos = barrier->GetPos();
+	
+		POINT pos = barrier->GetPos();
 		int r = barrier->GetR();
-
-        HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+	
+		HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
 		SetDCPenColor(hdc, RGB(255, 0, 0));
-;		Rectangle(hdc, pos.x - r/2, pos.y - r/2, pos.x + r / 2, pos.y + r / 2);
-        SelectObject(hdc, hOldBrush);
-
+		Rectangle(hdc, pos.x - r/2, pos.y - r/2, pos.x + r / 2, pos.y + r / 2);
+		SelectObject(hdc, hOldBrush);
+	
 		//Not End
 		EndPaint(hWnd, &ps);
 		break;
@@ -312,19 +325,18 @@ LRESULT CALLBACK WndProc_Barrier(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 // 정보 대화 상자의 메시지 처리기입니다.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    UNREFERENCED_PARAMETER(lParam);
-    switch (message)
-    {
-    case WM_INITDIALOG:
-        return (INT_PTR)TRUE;
-
-    case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-        {
-            EndDialog(hDlg, LOWORD(wParam));
-            return (INT_PTR)TRUE;
-        }
-        break;
-    }
-    return (INT_PTR)FALSE;
+	UNREFERENCED_PARAMETER(lParam);
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		return (INT_PTR)TRUE;
+	case WM_COMMAND:
+		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+		{
+		    EndDialog(hDlg, LOWORD(wParam));
+		    return (INT_PTR)TRUE;
+		}
+		break;
+	}
+	return (INT_PTR)FALSE;
 }

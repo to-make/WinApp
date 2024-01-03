@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <time.h>
+#include <cstdlib>
 
 #define UP 0
 #define DOWN 1
@@ -15,6 +16,7 @@
 #define R 50
 #define SPEED 10
 #define MAXLENGTH 80
+#define SHOPLENGTH 4
 
 #define INTTOCHAR(N) [](int n) -> TCHAR* {TCHAR tchar[MAXLENGTH];  wsprintf(tchar, _T("%d)"), n); return tchar;}(N)
 #define FLOATTOCHAR(N) [](float f) -> TCHAR* {TCHAR tchar[MAXLENGTH];  wsprintf(tchar, _T("%f"), f); return tchar;}(N)
@@ -110,18 +112,20 @@ class Shop
 {
 	int _maxcnt, _cnt;
 	Shop* _parent;
-	TCHAR _name[MAXLENGTH]; //not THCAR?
-	void(*_func)(Shop*, int); //upgrade or inform
+	TCHAR _name[MAXLENGTH],_description[MAXLENGTH];
+	void(*_message)(Shop*, int);
+	void(*_upgrade)(Shop*, int);
 public:
 
-	Shop(int, void(*)(Shop*, int));
-	Shop(int, void(*)(Shop*, int), Shop*);
+	Shop(*TCHAR, int, void(*)(Shop*, int));
+	Shop(*TCHAR, int, void(*)(Shop*, int), Shop*);
 	int GetMaxcnt() { return _maxcnt; }
 	int GetCnt() { return _cnt; }
 	TCHAR* GetName() { return _name; }
+	TCHAR* GetDescription() { return _description; }
 	void SetCnt(int cnt) { _cnt = cnt; }
-	void Update() { _func(this, 0); }
-	void Upgrade() { _func(this, 1); }
+	void UpdateMessage() { _message(this); }
+	void Upgrade() { _upgrade(this); _message(this); }
 	bool IsVisiable() {return _parent->_cnt!=0;}
 };
 /*
@@ -140,8 +144,12 @@ enemy move down
 
 void Init();
 bool MoveFrame();
-void UpdateShop();
-void AddShot(Shop*, int);
-void ShotDamage(Shop*, int);
-void ShotReload(Shop*, int);
-void AddBarrier(Shop*, int);
+void UpdateShopChoice();
+void AddShotMessage(Shop*);
+void AddShotUpgrade(Shop*);
+void ShotDamageMessage(Shop*);
+void ShotDamageUpgrade(Shop*);
+void ShotReloadMessage(Shop*);
+void ShotReloadUpgrade(Shop*);
+void AddBarrierMessage(Shop*);
+void AddBarrierUpgrade(Shop*);
