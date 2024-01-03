@@ -281,77 +281,77 @@ void UpdateShop()
 	for(Shop* i : shop)i->Update();
 }
 
-void AddShot(Shop* subject,int mode)
+void AddShotMessage(Shop* subject)
 {
 	int scnt = subject->GetCnt();
 	int smaxcnt = subject->GetMaxcnt();
 	TCHAR* sname = subject->GetName();
-	if(mode == 0){ //message
-		TCHAR text[MAXLENGTH] = _T("Fire ");
-		_tcscat(text, INTTOCHAR(scnt));
-		if(scnt != smaxcnt){
-			_tcscat(text, _T("("));
-			_tcscat(text, INTTOCHAR(scnt+1));
-			_tcscat(text, _T(")"));
-		}
-		_tcscat(text, (scnt==1?_T(" bullet"):_T(" bullets")));
-		_tcscpy(sname, text);
+	
+	TCHAR text[MAXLENGTH] = _T("Fire ");
+	_tcscat(text, INTTOCHAR(scnt));
+	if(scnt != smaxcnt){
+		_tcscat(text, _T("("));
+		_tcscat(text, INTTOCHAR(scnt+1));
+		_tcscat(text, _T(")"));
 	}
-	else if(mode == 1){ //upgrage
-	}
+	_tcscat(text, (scnt==1?_T(" bullet"):_T(" bullets")));
+	_tcscpy(sname, text);
 }
 
-void ShotDamage(Shop* subject, int mode)
+void ShotDamageMessage(Shop* subject)
 {
 	int scnt = subject->GetCnt();
 	int smaxcnt = subject->GetMaxcnt();
 	TCHAR* sname = subject->GetName();
-	if (mode == 0) { //message
-		TCHAR text[MAXLENGTH] = _T("Shot damage is ");
-		_tcscat(text, INTTOCHAR(player->GetDamage()));
-		if (scnt != smaxcnt) {
-			_tcscat(text, _T("("));
-			_tcscat(text, INTTOCHAR(player->GetDamage() + 1));
-			_tcscat(text, _T(")"));
-		}
-		_tcscpy(sname, text);
+	
+	TCHAR text[MAXLENGTH] = _T("Shot damage is ");
+	_tcscat(text, INTTOCHAR(player->GetDamage()));
+	if (scnt != smaxcnt) {
+		_tcscat(text, _T("("));
+		_tcscat(text, INTTOCHAR(player->GetDamage() + 1));
+		_tcscat(text, _T(")"));
 	}
-	else if (mode == 1) { //upgrage
-		subject->SetCnt(scnt + 1);
-		player->SetDamage(player->GetDamage() + 1);
-	}
+	_tcscpy(sname, text);
 }
 
-void ShotReload(Shop* subject, int mode)
+void ShotDamageUpgrade(Shop* subject)
 {
 	int scnt = subject->GetCnt();
-	int smaxcnt = subject->GetMaxcnt();
-	TCHAR* sname = subject->GetName();
-	if (mode == 0) { //message
-		TCHAR text[MAXLENGTH] = _T("Reload speed is ");
-		_tcscat(text, INTTOCHAR(player->GetCooltime()));
-		if (scnt != smaxcnt) {
-			_tcscat(text, _T("("));
-			_tcscat(text, INTTOCHAR(player->GetCooltime() - 1));
-			_tcscat(text, _T(")"));
-		}
-		_tcscat(text, _T("seconds"));
-		_tcscpy(sname, text);
-	}
-	else if (mode == 1) { //upgrage
-		subject->SetCnt(scnt + 1);
-		player->SetCooltime(player->GetCooltime() - 1);
-	}
+	
+	subject->SetCnt(scnt + 1);
+	player->SetDamage(player->GetDamage() + 1);
 }
 
-void AddBarrier(Shop* subject,int mode)
+void ShotReloadMessage(Shop* subject)
 {
 	int scnt = subject->GetCnt();
 	int smaxcnt = subject->GetMaxcnt();
 	TCHAR* sname = subject->GetName();
-	if(mode == 0){ //message
-		_tcscpy(sname, (scnt == 1 ? _T("(Add Barrier)") : _T("Add Barrier")));
+	
+	TCHAR text[MAXLENGTH] = _T("Reload speed is ");
+	_tcscat(text, INTTOCHAR(player->GetCooltime()));
+	if (scnt != smaxcnt) {
+		_tcscat(text, _T("("));
+		_tcscat(text, INTTOCHAR(player->GetCooltime() - 1));
+		_tcscat(text, _T(")"));
 	}
-	else if(mode == 1){ //upgrage
-	}
+	_tcscat(text, _T("seconds"));
+	_tcscpy(sname, text);
+}
+
+void ShotReloadUpgrade(Shop* subject)
+{
+	int scnt = subject->GetCnt();
+	
+	subject->SetCnt(scnt + 1);
+	player->SetCooltime(player->GetCooltime() - 1);
+}
+
+void AddBarrierMessage(Shop* subject)
+{
+	int scnt = subject->GetCnt();
+	int smaxcnt = subject->GetMaxcnt();
+	TCHAR* sname = subject->GetName();
+	
+	_tcscpy(sname, (scnt == 1 ? _T("(Add Barrier)") : _T("Add Barrier")));
 }
