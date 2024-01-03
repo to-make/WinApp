@@ -239,12 +239,12 @@ LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 		DrawText(hdc, _T("Shop"), -1, &rt, DT_CENTER);
 
 		size_t len = shop.size();
-		int check[len];  //Is it right?
-		fill(check, check+len, 0);
+		bool check[len];  //Is it right?
+		fill(check, check+len, false);
 		for(int i=0;i<3;i++){
 			int g = rand()%len;
-			while(check[g]!=0||shop[i]->GetMaxcnt()-shop->GetCnt()==0)g = rand()%len;
-			
+			while(check[g]||shop[i]->GetMaxcnt()-shop->GetCnt()==0)g = rand()%len;
+			check[g] = true;
 			shop[g]->UpdateMessage();
 			int scnt = shop[g]->GetCnt();
 			int smaxcnt = shop[g]->GetMaxcnt();
@@ -252,8 +252,10 @@ LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 			int width = 200/smaxcnt;
 			
 			//text
+			SetTextAlign(hdc, TA_CENTER);
 			SelectObject(hdc, hFont50);
 			TextOut(hdc, center, 300, shop[g]->GetName(), lstrlen(shop[g]->GetName()));
+			SelectObject(hdc, hFont30);
 			TextOut(hdc, center, 450, shop[g]->GetDescription(), lstrlen(shop[g]->GetDescription()));
 			
 			//square
