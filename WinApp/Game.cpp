@@ -231,10 +231,10 @@ void Init()
 	player = new Player(10, 10,SPEED, 50, {100,100});
 	nLastTime = clock();
 
-	shop.push_back(new Shop(5, AddShot));
-	shop.push_back(new Shop(5, ShotDamage));
-	shop.push_back(new Shop(5, ShotReload));
-	shop.push_back(new Shop(1, AddBarrier));
+	shop.push_back(new Shop(_T("Add Shot"), 5, AddShot));
+	shop.push_back(new Shop(_T("Shot Damage"), 5, ShotDamage));
+	shop.push_back(new Shop(_T("Shot Reload"), 5, ShotReload));
+	shop.push_back(new Shop(_T("Add Barrier"), 1, AddBarrier));
 	parent = shop.back();
 }
 
@@ -285,7 +285,7 @@ void AddShotMessage(Shop* subject)
 {
 	int scnt = subject->GetCnt();
 	int smaxcnt = subject->GetMaxcnt();
-	TCHAR* sname = subject->GetName();
+	TCHAR* sdescription = subject->GetDescription();
 	
 	TCHAR text[MAXLENGTH] = _T("Fire ");
 	_tcscat(text, INTTOCHAR(scnt));
@@ -295,14 +295,14 @@ void AddShotMessage(Shop* subject)
 		_tcscat(text, _T(")"));
 	}
 	_tcscat(text, (scnt==1?_T(" bullet"):_T(" bullets")));
-	_tcscpy(sname, text);
+	_tcscpy(sdescription, text);
 }
 
 void ShotDamageMessage(Shop* subject)
 {
 	int scnt = subject->GetCnt();
 	int smaxcnt = subject->GetMaxcnt();
-	TCHAR* sname = subject->GetName();
+	TCHAR* sdescription = subject->GetDescription();
 	
 	TCHAR text[MAXLENGTH] = _T("Shot damage is ");
 	_tcscat(text, INTTOCHAR(player->GetDamage()));
@@ -311,7 +311,7 @@ void ShotDamageMessage(Shop* subject)
 		_tcscat(text, INTTOCHAR(player->GetDamage() + 1));
 		_tcscat(text, _T(")"));
 	}
-	_tcscpy(sname, text);
+	_tcscpy(sdescription, text);
 }
 
 void ShotDamageUpgrade(Shop* subject)
@@ -326,7 +326,7 @@ void ShotReloadMessage(Shop* subject)
 {
 	int scnt = subject->GetCnt();
 	int smaxcnt = subject->GetMaxcnt();
-	TCHAR* sname = subject->GetName();
+	TCHAR* sdescription = subject->GetDescription();
 	
 	TCHAR text[MAXLENGTH] = _T("Reload speed is ");
 	_tcscat(text, INTTOCHAR(player->GetCooltime()));
@@ -336,7 +336,7 @@ void ShotReloadMessage(Shop* subject)
 		_tcscat(text, _T(")"));
 	}
 	_tcscat(text, _T("seconds"));
-	_tcscpy(sname, text);
+	_tcscpy(sdescription, text);
 }
 
 void ShotReloadUpgrade(Shop* subject)
@@ -351,7 +351,7 @@ void AddBarrierMessage(Shop* subject)
 {
 	int scnt = subject->GetCnt();
 	int smaxcnt = subject->GetMaxcnt();
-	TCHAR* sname = subject->GetName();
+	TCHAR* sdescription = subject->GetDescription();
 	
-	_tcscpy(sname, (scnt == 1 ? _T("(Add Barrier)") : _T("Add Barrier")));
+	_tcscpy(sdescription, (scnt == 1 ? _T("(Add Barrier)") : _T("Add Barrier")));
 }
