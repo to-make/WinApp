@@ -122,7 +122,7 @@ public:
 	TCHAR* GetName() { return _name; }
 	void SetCnt(int cnt) { _cnt = cnt; }
 	void Update() { _message(this); }
-	void Upgrade() { _upgrade(this); }
+	void Upgrade() { _upgrade(this); _message(this); }
 	bool IsVisiable() {return _parent->_cnt!=0;}
 };
 /*
