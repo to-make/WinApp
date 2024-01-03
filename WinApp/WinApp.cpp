@@ -17,6 +17,7 @@ extern Player* player;
 extern BarrierObj* barrier;
 extern std::vector<Shop*> shop;
 extern RECT rtMapSize;
+extern int* ShopChoice
 
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
@@ -192,15 +193,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	static int scroll=0;
 	static HFONT hFont100,hFont50,hFont30;
+	static int scroll=0;
 	switch (message)
 	{
 	case WM_CREATE:
 		hFont100 = CreateFont(100, 0, 0, 0, FW_NORMAL, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, 0, _T("명조"));
 		hFont50 = CreateFont(50, 0, 0, 0, FW_NORMAL, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, 0, _T("명조"));
 		hFont30 = CreateFont(30, 0, 0, 0, FW_NORMAL, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, 0, _T("명조"));
-		UpdateShop();
+		UpdateShopChoice();
 		break;
 	case WM_KEYDOWN:
 		switch (wParam)
@@ -232,33 +233,31 @@ LRESULT CALLBACK WndProc_Shop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 	{
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
-		RECT rt;
-		GetClientRect(hWnd, &rt);
+		RECT TextArea;
+		GetClientRect(hWnd, &TextArea);
 	
 		HFONT hOldFont = (HFONT)SelectObject(hdc, hFont100);
-		DrawText(hdc, _T("Shop"), -1, &rt, DT_CENTER);
+		DrawText(hdc, _T("Shop"), -1, &TextArea, DT_CENTER);
 
-		size_t len = shop.size();
-		bool check[len];  //Is it right?
-		fill(check, check+len, false);
-		for(int i=0;i<3;i++){
-			int g = rand()%len;
-			while(check[g]||shop[i]->GetMaxcnt()-shop->GetCnt()==0)g = rand()%len;
-			check[g] = true;
-			shop[g]->UpdateMessage();
-			int scnt = shop[g]->GetCnt();
-			int smaxcnt = shop[g]->GetMaxcnt();
+		for(int i : ShopChoice){
+			int scnt = shop[i]->GetCnt();
+			int smaxcnt = shop[i]->GetMaxcnt();
 			int center = 300 + i*300;
 			int width = 200/smaxcnt;
+
+			//square
 			
 			//text
+			//DrawText(hdc,szTemp, strlen(szTemp) ,&TextArea, DT_CENTER );
 			SetTextAlign(hdc, TA_CENTER);
 			SelectObject(hdc, hFont50);
-			TextOut(hdc, center, 300, shop[g]->GetName(), lstrlen(shop[g]->GetName()));
+			TextOut(hdc, center, 300, shop[i]->GetName(), lstrlen(shop[i]->GetName()));
 			SelectObject(hdc, hFont30);
-			TextOut(hdc, center, 450, shop[g]->GetDescription(), lstrlen(shop[g]->GetDescription()));
+			TextArea = {center-100, 450, center+100, 1100};
+			DrawText(hdc,shop[i]->GetDescription(), lstrlen(shop[i]->GetDescription()) ,&TextArea, DT_CENTER | DT_TOP);
+			//TextOut(hdc, center, 450, shop[i]->GetDescription(), lstrlen(shop[i]->GetDescription()));
 			
-			//square
+			//bar
 			for(int j=0;j<smaxcnt;j++){
 				if(j<scnt)SetDCPenColor(hdc, RGB(200, 0, 0));  //alternative : use graypen and not fill
 				else if(j==scnt)SetDCPenColor(hdc, RGB(0, 0, 200));
@@ -330,7 +329,7 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_INITDIALOG:
-		return (INT_PTR)TRUE;₩
+		return (INT_PTR)TRUE;
 	case WM_COMMAND:
 		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
 		{
