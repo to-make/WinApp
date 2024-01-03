@@ -39,7 +39,7 @@ bool Object::IsCollide(Object* t)
 
 void Object::MoveOneFrame(int deltatime)
 {
-	throw "ÀÓ½Ã";
+	throw "ìž„ì‹œ";
 }
 
 void Object::Draw(HDC hdc)
@@ -91,7 +91,7 @@ void Player::MoveOneFrame(int deltatime)
 	}
 
 	//wall collsion check
-	int MLeft = -1, MRight = -1, MTop = -1, MBottom = -1; //TODO:º¯¼ö¸í
+	int MLeft = -1, MRight = -1, MTop = -1, MBottom = -1; //TODO:ë³€ìˆ˜ëª…
 
 	if (ptPlayer.x - R < rtMapSize.left) {
 		MLeft = +rtMapSize.left - (ptPlayer.x - R);
@@ -151,48 +151,25 @@ void BarrierObj::MovePos(POINT pos)
 
 bool BarrierObj::IsCollide(Object t)
 {
-	POINT tpos = t.GetPos(), vertex = { 0,0 };
-	int x = 0, y = 0,check;
-	if(_pos.x - _r/2 > tpos.x)x = 1;
-	else if(_pos.x + _r/2 < tpos.x)x = 3;
-	else x = 2;
-	if(_pos.y - _r/2 > tpos.y)y = 1;
-	else if(_pos.y + _r/2 < tpos.y)y = 3;
-	else y = 2;
-	check = (y<<2) | x;
-	switch(check)
-	{
-	case 6:
-		return _pos.y - _r/2 <= (t.GetR());
-	case 9:
-		return _pos.x - _r/2 <= (t.GetR());
-	case 10:
-		return true;
-	case 12:
-		return _pos.x + _r/2 <= (t.GetR());
-	case 14:
-		return _pos.y + _r/2 <= (t.GetR());
-	case 5:
-		vertex = {_pos.x - _r/2, _pos.y - _r/2};
-		break;
-	case 7:
-		vertex = {_pos.x + _r/2, _pos.y - _r/2};
-		break;
-	case 13:
-		vertex = {_pos.x - _r/2, _pos.y + _r/2};
-		break;
-	case 15:
-		vertex = {_pos.x - _r/2, _pos.y + _r/2};
-		break;
-	}
-	//TODO:vertex°¡ ÃÊ±âÈ­ ¾ÈµÈ°æ¿ì Ã³¸®
-	long long int dis = (vertex.x - tpos.x) * (vertex.x - tpos.x) + (vertex.y - tpos.y) * (vertex.y - tpos.y);
-	return dis <= (t.GetR());
+	POINT tpos = t.GetPos();
+	return (pow(abs((((_pos.x-_r/2<=tpos.x?2:0)|((_pos.x-_r/2>tpos.x||_pos.x+_r/2<tpos.x)?1:0))-2))*(pos.x + _r*(((_pos.x-_r/2<=tpos.x?2:0)|((_pos.x-_r/2>tpos.x||_pos.x+_r/2<tpos.x)?1:0))-2) - tpos.x), 2)
+		+ pow(abs((((_pos.y-_r/2<=tpos.y?2:0)|((_pos.y-_r/2>tpos.y||_pos.y+_r/2<tpos.y)?1:0))-2))*(pos.y + _r*(((_pos.y-_r/2<=tpos.y?2:0)|((_pos.y-_r/2>tpos.y||_pos.y+_r/2<tpos.y)?1:0))-2) - tpos.y), 2)
+		<= pow(t.GetR(),2)) 
+		&& (((((_pos.x-_r/2<=tpos.x?2:0)|((_pos.x-_r/2>tpos.x||_pos.x+_r/2<tpos.x)?1:0))-2) != 0)
+		  ||((((_pos.y-_r/2<=tpos.y?2:0)|((_pos.y-_r/2>tpos.y||_pos.y+_r/2<tpos.y)?1:0))-2)!=0));
 }
 
 bool BarrierObj::IsCollide(Object* t)
 {
-	POINT tpos = t->GetPos(), vertex;
+	
+	POINT tpos = t->GetPos();
+	return (pow(abs((((_pos.x-_r/2<=tpos.x?2:0)|((_pos.x-_r/2>tpos.x||_pos.x+_r/2<tpos.x)?1:0))-2))*(pos.x + _r*(((_pos.x-_r/2<=tpos.x?2:0)|((_pos.x-_r/2>tpos.x||_pos.x+_r/2<tpos.x)?1:0))-2) - tpos.x), 2)
+		+ pow(abs((((_pos.y-_r/2<=tpos.y?2:0)|((_pos.y-_r/2>tpos.y||_pos.y+_r/2<tpos.y)?1:0))-2))*(pos.y + _r*(((_pos.y-_r/2<=tpos.y?2:0)|((_pos.y-_r/2>tpos.y||_pos.y+_r/2<tpos.y)?1:0))-2) - tpos.y), 2)
+		<= pow(t->GetR(),2)) 
+		&& (((((_pos.x-_r/2<=tpos.x?2:0)|((_pos.x-_r/2>tpos.x||_pos.x+_r/2<tpos.x)?1:0))-2) != 0)
+		  ||((((_pos.y-_r/2<=tpos.y?2:0)|((_pos.y-_r/2>tpos.y||_pos.y+_r/2<tpos.y)?1:0))-2)!=0));
+	
+	/*POINT tpos = t->GetPos(), vertex;
 	int x = 0, y = 0,check;
 	if(_pos.x - _r/2 > tpos.x)x = 1;
 	else if(_pos.x + _r/2 < tpos.x)x = 3;
@@ -227,10 +204,10 @@ bool BarrierObj::IsCollide(Object* t)
 			break;
 	}
 	long long int dis = (vertex.x - tpos.x) * (vertex.x - tpos.x) + (vertex.y - tpos.y) * (vertex.y - tpos.y);
-	return dis <= (t->GetR());
+	return dis <= (t->GetR());*/
 }
 
-Shop::Shop(int maxcnt,void(*func)(Shop*, int))//TODO:_name ÃÊ±âÈ­
+Shop::Shop(int maxcnt,void(*func)(Shop*, int))//TODO:_name ì´ˆê¸°í™”
 {
 	_maxcnt = maxcnt;
 	_cnt = 0;
@@ -239,7 +216,7 @@ Shop::Shop(int maxcnt,void(*func)(Shop*, int))//TODO:_name ÃÊ±âÈ­
 	_func = func;
 }
 
-Shop::Shop(int maxcnt,void(*func)(Shop*, int), Shop* parent)//TODO:_name ÃÊ±âÈ­
+Shop::Shop(int maxcnt,void(*func)(Shop*, int), Shop* parent)//TODO:_name ì´ˆê¸°í™”
 {
 	_maxcnt = maxcnt;
 	_cnt = 0;
